@@ -34,10 +34,10 @@ After you’ve created the configuration, we will work on its optimization like 
 
 ## PRE-REQUISITES
 1. Fork current repository. A fork is a copy of a project and this allows you to make changes without affecting the original project.
-2. Create a GitHub organization [refer to this document](https://docs.github.com/ru/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch).
+2. Create a GitHub organization [refer to this document](https://docs.github.com/ru/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch). Choose a name you find appealing.
 3. Create a personal access token with full access [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 4. All actions should be done under your fork and Terraform gets it context from your local clone working directory: 
-    - Change current directory to `/tf-epam-lab/base` folder and create files `root.tf` and `variables.tf`.
+    - Change current directory to `/tf-epam-lab/non_cloud_task/github/base` folder and create files `root.tf` and `variables.tf`.
     - In the `variables.tf` create variable `gh_token` without default value. To prevent providing GitHub token on each configuration run and staying secure set binding environment variable:
         ```bash
         export TF_VAR_gh_token={CREATED_PERSONAL_GITHUB_TOKEN}
@@ -53,7 +53,7 @@ After you’ve created the configuration, we will work on its optimization like 
 
     Please use **underscore** Terraform resources naming, e.g. `my_resource` instead of `my-resource`.
 
-5. Create directory `~/tf-epam-lab/repos`, change current directory  to `~/tf-epam-lab/repos` and repeat the steps in [2].
+5. Create directory `/tf-epam-lab/non_cloud_task/github/repos`, change current directory  to `/tf-epam-lab/non_cloud_task/github/repos` and repeat the steps in [2].
 6. Install docker on your laptop.
 
 You are ready for the lab!
@@ -61,7 +61,7 @@ You are ready for the lab!
 # Creating Infrastructure
 
 ## TASK 1 - Create GitHub Organization settings
-Change current directory  to `~/tf-epam-lab/base`
+Change current directory  to `/tf-epam-lab/non_cloud_task/github/base`
 
 Create an organization settings resource with attributes:
 
@@ -100,7 +100,7 @@ Apply your changes when you're ready.
 
 ## TASK 2 - Create an organization secret
 
-Ensure that the current directory is `~/tf-epam-lab/base`
+Ensure that the current directory is `/tf-epam-lab/non_cloud_task/github/base`
 
 - Generate a read only personal GitHub token [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). 
 - Create a `variables.tf` file with empty variable `read_only_gh_token` but with the following description `Provides read only GitHub token`. Never store you secrets inside the code!
@@ -121,7 +121,7 @@ Apply your changes when ready.
 
 ## TASK 3 - Create teams and memberships
 
-Ensure that the current directory is  `~/tf-epam-lab/base`
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create an S3 bucket as the storage for your infrastructure:
 
@@ -143,7 +143,7 @@ Apply your changes when ready.
 - Push *.tf configuration files to git
 
 ## TASK 4 - Create a security manager
-Ensure that the current directory is  `~/tf-epam-lab/base`
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create a GitHub organization project resource with attributes:
 -   Create add a new team resource (`name="security-team"`).
@@ -163,7 +163,7 @@ Apply your changes when ready.
 - Push *.tf configuration files to git
 
 ## TASK 5 - Create a Private Repository
-Ensure that the current directory is  `~/tf-epam-lab/base`
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create the following repository with attributes:
 - `name`: `"tf-lab-devops"`
@@ -185,7 +185,7 @@ Apply your changes when ready.
 - Push *.tf configuration files to git
 
 ## TASK 6 - Form TF Output
-Ensure that current directory is  `~/tf-epam-lab/base`
+Ensure that current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create outputs for your configuration:
 
@@ -207,8 +207,8 @@ Apply your changes when ready. You can update outputs without using `terraform a
 
 Learn about [terraform remote state data source](https://www.terraform.io/docs/language/state/remote-state-data.html).
 
-! Change the current directory to  `~/tf-epam-lab/compute`
-! Copy `root.tf` from `~/tf-epam-lab/base` to `~/tf-epam-lab/compute`
+! Change the current directory to  `/tf-epam-lab/non_cloud_task/github/repos`
+! Copy `root.tf` from `/tf-epam-lab/non_cloud_task/github/base` to `/tf-epam-lab/non_cloud_task/github/repos`
 
 Add remote state resources to your configuration to be able to import output resources:
 
@@ -227,7 +227,7 @@ Apply your changes when ready.
 
 ## TASK 8 - Create a Secure Public Repository
 
-Ensure that the current directory is  `~/tf-epam-lab/compute`
+Ensure that the current directory is  ``/tf-epam-lab/non_cloud_task/github/repos`
 
 - Create a repository resource with attributes:
     - `name=tf-lab-frontend`
@@ -338,7 +338,7 @@ Learn about [terraform data sources](https://www.terraform.io/docs/language/data
 In this task we are going to use a data driven approach instead to use remote state data source.
 
 #### compute configuration
-Change the current directory to `~/tf-epam-lab/compute`
+Change the current directory to `/tf-epam-lab/non_cloud_task/github/repos`
 
 Refine your configuration:
 
@@ -360,7 +360,7 @@ Apply your changes when ready.
 
 ## TASK 13 - Create dynamically manageable resources
 
-Ensure that the current directory is  `~/tf-epam-lab/base`
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Make the organization teams memberships management more manageable. In order to do this, for each team create a variable. For instance, for the team `security-team` create a variable:
 ```tf
@@ -397,10 +397,10 @@ Learn about [terraform modules](https://www.terraform.io/docs/language/modules/d
 
 Refine your configurations:
 
-- Refine `compute` configuration by creating a repository module.
+- Refine `repos` configuration by creating a repository module.
 
 
-Store your modules in `~/tf-epam-lab/modules/` subfolders.
+Store your modules in `/tf-epam-lab/non_cloud_task/github/modules` subfolders.
 
 Run `terraform validate` and `terraform fmt` to check if your modules are valid and fit to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
