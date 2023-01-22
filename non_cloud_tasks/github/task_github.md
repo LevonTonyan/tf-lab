@@ -1,7 +1,7 @@
 - [Problem to Be Solved](task_github.md#problem-to-be-solved)
   * [Explanation of the Solution](task_github.md#explanation-of-the-solution)
   * [PRE-REQUISITES](task_github.md#pre-requisites)
-- [Creating Infrastructure](task_github.md#creating-infrastructure)
+- [Creating GitHub resources](task_github.md#creating-github-resources)
   * [TASK 1 - Create GitHub Organization settings](task_github.md#task-1-create-github-organization-settings)
   * [TASK 2 - Create an organization secret](task_github.md#task-2-create-an-organization-secret)
   * [TASK 3 - Create teams and memberships](task_github.md#task-3-create-teams-and-memberships)
@@ -42,7 +42,7 @@ After you’ve created the configuration, we will work on its optimization like 
         ```bash
         export TF_VAR_gh_token={CREATED_PERSONAL_GITHUB_TOKEN}
         ```
-    **NOTE**: NEVER store the value of the GitHub token in the repository code.
+    <b><mark>**NOTE**: NEVER store the value of the GitHub token in the repository code.</b></mark>
     - Add a `terraform {}`empty block to this file. Create an GitHub provider block inside `root.tf` file with the following attributes: 
         - `owner = "{organization_name}"`
         - `token = "var.gh_token"`.
@@ -58,7 +58,7 @@ After you’ve created the configuration, we will work on its optimization like 
 
 You are ready for the lab!
 
-# Creating Infrastructure
+# Creating GitHub resources
 
 ## TASK 1 - Create GitHub Organization settings
 Change current directory  to `/tf-epam-lab/non_cloud_task/github/base`
@@ -94,7 +94,7 @@ Apply your changes when you're ready.
 
 ### Definition of DONE:
 
-- Terraform created resource with no errors
+- Terraform created resources with no errors
 - GitHub organization is configured as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
@@ -103,7 +103,7 @@ Apply your changes when you're ready.
 Ensure that the current directory is `/tf-epam-lab/non_cloud_task/github/base`
 
 - Generate a read only personal GitHub token [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). 
-- Create a `variables.tf` file with empty variable `read_only_gh_token` but with the following description `Provides read only GitHub token`. Never store you secrets inside the code!
+- Create empty variable `read_only_gh_token` but with the following description `Provides read only GitHub token`. <br><b><mark>Never store you secrets inside the code!</b></mark>
 - Create a `secrets.tf` file with `github_actions_organization_secret` resource (`visibility="selected"`). Use `read_only_gh_token` variable as a secret value source.
 - Run `terraform plan` and provide required public key. Observe the output and run `terraform plan` again.
 - To prevent providing read only token on each configuration run and staying secure set binding environment variable - `export TF_VAR_read_only_gh_token="{YOUR_READ_ONLY_GITHUB_TOKEN}"`
@@ -115,7 +115,7 @@ Apply your changes when ready.
 
 ### Definition of DONE:
 
-- Terraform created infrastructure with no errors
+- Terraform created resources with no errors
 - GitHub organization secret is configured as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
@@ -138,7 +138,7 @@ Apply your changes when ready.
 
 ### Definition of DONE:
 
-- Terraform created resource with no errors
+- Terraform created resources with no errors
 - GitHub team and members resources created as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
@@ -158,7 +158,7 @@ Apply your changes when ready.
 
 ### Definition of DONE:
 
-- Terraform created infrastructure with no errors
+- Terraform created resources with no errors
 - GitHub team and security manager assignment are created as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
@@ -180,7 +180,7 @@ Apply your changes when ready.
 
 ### Definition of DONE:
 
-- Terraform created infrastructure with no errors
+- Terraform created resources with no errors
 - GitHub repository is created as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
