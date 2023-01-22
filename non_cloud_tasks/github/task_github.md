@@ -291,7 +291,7 @@ Hint: configuration for `base` state:
   }
 ```
 
-Do not forget to change the path to the remote state for `compute` configuration.
+Do not forget to change the path to the remote state for `repos` configuration.
 
 Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
@@ -300,10 +300,10 @@ Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
-You are going to move previously created resource(DevOps repository) from `base` to `compute` state.
+You are going to move previously created resource(DevOps repository) from `base` to `repos` state.
 Hint: Keep in mind that there are 3 instances: GitHub resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
 
-- Move The created GitHub repository `tf-lab-devops` resource from the `base` state to the `compute` using `terraform state mv` command.
+- Move The created GitHub repository `tf-lab-devops` resource from the `base` state to the `repos` using `terraform state mv` command.
 - Update both configurations according to this move.
 - Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
 
@@ -322,9 +322,9 @@ You are going to import a new resource (repository `tf-lab-backend`) to your sta
 Hint: Keep in mind that there are 3 instances: GitHub resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Importing a resource" is importing its attributes into a Terraform state. Then you have to add said resource to the destination configuration (this action is not automated).
 
 - Create a GitHub repository in the created GitHub organization via GitHub WebUI (`name="tf-lab-backend"`).
-- Add a new resource `github_repository` `tf_epam_lab_backend_repository` to the `compute` configuration.
+- Add a new resource `github_repository` `tf_epam_lab_backend_repository` to the `repos` configuration.
 - Run `terraform plan` to see your changes but do not apply changes.
-- Import `tf_epam_lab_backend_repository` repository to the `compute` state.
+- Import `tf_epam_lab_backend_repository` repository to the `repos` state.
 - Run `terraform plan` again to ensure that import was successful.
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
@@ -337,7 +337,7 @@ Learn about [terraform data sources](https://www.terraform.io/docs/language/data
 
 In this task we are going to use a data driven approach instead to use remote state data source.
 
-#### compute configuration
+#### repos configuration
 Change the current directory to `/tf-epam-lab/non_cloud_task/github/repos`
 
 Refine your configuration:
