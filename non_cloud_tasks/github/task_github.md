@@ -274,7 +274,7 @@ As a result a GitHub repository should be created with appropriate teams' permis
 
 Hint: Create a docker container with Postgres databases as a pre-requirement for this task. 
 ```bash
-docker run -d --name pg-state -e POSTGRES_USER=tfstate -e POSTGRES_PASSWORD={YOUR_PASSWORD} -e POSTGRES_MULTIPLE_DATABASES=compute,base -p 5432:5432 gradescope/postgresql-multiple-databases:14.4
+docker run -d --name pg-state -e POSTGRES_USER=tfstate -e POSTGRES_PASSWORD={YOUR_PASSWORD} -e POSTGRES_MULTIPLE_DATABASES=repos,base -p 5432:5432 gradescope/postgresql-multiple-databases:14.4
 ```
 
 Learn about [terraform backend in Postgres](https://developer.hashicorp.com/terraform/language/settings/backends/pg)
@@ -282,7 +282,7 @@ Learn about [terraform backend in Postgres](https://developer.hashicorp.com/terr
 Refine your configurations:
 
 - Refine `base` configuration by moving local state to a postgres database.
-- Refine `compute` configuration by moving local state to a postgres database.
+- Refine `repos` configuration by moving local state to a postgres database.
 
 Hint: configuration for `base` state:
 ```tf
