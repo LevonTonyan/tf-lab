@@ -34,8 +34,11 @@ After you’ve created the configuration, we will work on its optimization like 
 
 ## PRE-REQUISITES
 1. Fork current repository. A fork is a copy of a project and this allows you to make changes without affecting the original project.
-2. Create a GitHub organization [refer to this document](https://docs.github.com/ru/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch). Choose a name you find appealing.
-3. Create a personal access token with full access [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+2. Create a GitHub organization [refer to this document](https://docs.github.com/ru/organizations/collaborating-with-groups-in-organizations/creating-a-new-organization-from-scratch). Choose a name you find appealing, like `epam-tf-lab-{StudentSurname}`.
+  
+    For example, `epam-tf-lab-skywalker`.
+
+3. Create a classic personal access token with full access [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 4. All actions should be done under your fork and Terraform gets it context from your local clone working directory: 
     - Change current directory to `/tf-epam-lab/non_cloud_task/github/base` folder and create files `root.tf` and `variables.tf`.
     - In the `variables.tf` create variable `gh_token` without default value. To prevent providing GitHub token on each configuration run and staying secure set binding environment variable:
@@ -43,7 +46,7 @@ After you’ve created the configuration, we will work on its optimization like 
         export TF_VAR_gh_token={CREATED_PERSONAL_GITHUB_TOKEN}
         ```
     <b><mark>**NOTE**: NEVER store the value of the GitHub token in the repository code.</b></mark>
-    - Add a `terraform {}`empty block to this file. Create an GitHub provider block inside `root.tf` file with the following attributes: 
+    - Add a `terraform {}` empty block to the file `root.tf`. In the same file create an GitHub provider block with the following attributes: 
         - `owner = "{organization_name}"`
         - `token = "var.gh_token"`.
 
@@ -81,6 +84,7 @@ Create an organization settings resource with attributes:
 -	`dependabot_alerts_enabled_for_new_repositories`: `true`
 -	`dependabot_security_updates_enabled_for_new_repositories`: `true`
 -	`dependency_graph_enabled_for_new_repositories`: `true`
+- `advanced_security_enabled_for_new_repositories`: `false`
 
 **Hint**: A local value assigns a name to an expression, so you can use it multiple times within a module without repeating it. 
 
@@ -100,18 +104,24 @@ Apply your changes when you're ready.
 
 ## TASK 2 - Create an organization secret
 
+The target of this task is to create a GitHub organization secret.
+
+The purpose of a GitHub secret is to securely store and manage sensitive information, such as authentication tokens, encryption keys, and other confidential data, that is needed to use in your GitHub Actions workflows or other integrations. This helps to keep sensitive information secure and avoid exposing it in open source code or in logs.
+
 Ensure that the current directory is `/tf-epam-lab/non_cloud_task/github/base`
 
-- Generate a read only personal GitHub token [refer to this document](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token). 
-- Create empty variable `read_only_gh_token` but with the following description `Provides read only GitHub token`. <br><b><mark>Never store you secrets inside the code!</b></mark>
-- Create a `secrets.tf` file with `github_actions_organization_secret` resource (`visibility="selected"`). Use `read_only_gh_token` variable as a secret value source.
+- Create empty variables `username` and `password` but with the following descriptions `Dummy API username` and `Dummy API password`. <br><b><mark>Never store you secrets inside the code!</b></mark>
+- Create a `secrets.tf` file with `github_actions_organization_secret` resources (`visibility="selected"`). Use `username` and `passwords` variables as secret value sources.
 - Run `terraform plan` and provide required public key. Observe the output and run `terraform plan` again.
-- To prevent providing read only token on each configuration run and staying secure set binding environment variable - `export TF_VAR_read_only_gh_token="{YOUR_READ_ONLY_GITHUB_TOKEN}"`
+- To prevent providing read only token on each configuration run and staying secure set binding environment variable - `export TF_VAR_username="kminchelle"`,
+`export TF_VAR_password="0lelplR"`.
 - Run `terraform plan` and observe the output.
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
 
 Apply your changes when ready.
+
+**Note:** Actually, the data for these secrets are used for [dummy API](https://dummyjson.com). So, they are fake secrets. These secrets will be used later in the one of the folowing tasks.
 
 ### Definition of DONE:
 
@@ -123,13 +133,13 @@ Apply your changes when ready.
 
 Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
-Create an S3 bucket as the storage for your infrastructure:
+Create a team and team's members for your GitHub organization:
 
 -	Create `members.tf`.
--   Create an organization team (`name="devops-team"`, `privacy="secret"`)
+- Create an organization team (`name="devops-team"`, `privacy="secret"`)
 -	Create at least 1-2 members (`role="member"`) and add them to the team.
 
-**Hint**: Use your coalligues' GitHub account usernames as members in terms of this lab.
+**Hint**: Use your colleagues' GitHub account usernames as members in terms of this lab.
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
 Run `terraform plan` to see your changes.
@@ -143,6 +153,11 @@ Apply your changes when ready.
 - Push *.tf configuration files to git
 
 ## TASK 4 - Create a security manager
+
+The purpose of this task is to create a security manager for the created GitHub organization.
+
+GitHub Security Managers is a feature in GitHub that allows an organization to designate specific people as security managers. Security managers have the ability to manage security alerts, perform security triage, and dismiss false positives. This helps organizations to streamline their security processes, ensuring that security issues are addressed efficiently and effectively. Security Managers can be assigned to specific repositories or across an entire organization, providing greater flexibility and control over security management.
+
 Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create a GitHub organization project resource with attributes:
@@ -190,7 +205,7 @@ Ensure that current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 Create outputs for your configuration:
 
 - Create `outputs.tf` file.
-- Following outputs are required: `organization_id`, `teams_names`[set of strings], `security_manager_team_slug`, `secrets_names`[set of strings], `base_repository_name`.
+- Following outputs are required: `organization_id`, `teams_slugs` (names) [set of strings], `security_manager_team_slug` (name), `secret_name`, `base_repository_name`.
 
 Store all resources from this task in the `outputs.tf` file.
 
@@ -246,8 +261,17 @@ Ensure that the current directory is  ``/tf-epam-lab/non_cloud_task/github/repos
 - Provide access to the created organization secret for the repository.
 - Create `.github/CODEOWNERS` files with the content:
     ```
-    *      @{ORGANIZATION_NAME}/{SECURITY_TEAM_SLUG}
+    *      @ORGANIZATION_NAME/SECURITY_TEAM_SLUG
     ```
+  
+  **INFO**: The purpose of a CODEOWNERS file in GitHub is to specify which users or teams are responsible for reviewing and maintaining specific parts of a repository. When a pull request is created, GitHub uses the information in the CODEOWNERS file to determine who should be requested for review based on the files that were changed. This helps to ensure that changes to code are reviewed by the appropriate people and helps to maintain quality and consistency in the codebase.
+  
+- For the repository `tf-lab-frontend` add permission to run GitHub actions. [Hint](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_organization_permissions)
+- Create `.github/workflows/reusable_node_vulnerability_scan.yml` file. Content for this file is in [this file](lab_files/reusable_node_vulnerability_scan.yml). This is a simple GitHub action workflow which performs a quick authenticated vulnerability scan of the dummy REST API. This scan will be run manually from the GitHub Web GUI.
+- For authentication in the vulnerability scan previously created secrets should be used. It is required to add permissions for the created repository to used the secrets. In can be added as the attribute `selected_repository_ids` to the resource `github_actions_organization_secret` or by creating a resource `github_actions_organization_secret_repositories`.
+
+  
+  **INFO**: Centralized managing of GitHub actions by terraform usually may be used if a similar GitHub Action workflow is required for several repositories. It is a simple way to manage this.
 
 Store all resources from this task in the `repositories.tf` file.
 
@@ -279,6 +303,8 @@ docker run -d --name pg-state -e POSTGRES_USER=tfstate -e POSTGRES_PASSWORD={YOU
 
 Learn about [terraform backend in Postgres](https://developer.hashicorp.com/terraform/language/settings/backends/pg)
 
+Postgres state was selected for this lab as a free available backend state. To make postgres backend usage simpler here you need to have docker installed.
+
 Refine your configurations:
 
 - Refine `base` configuration by moving local state to a postgres database.
@@ -300,12 +326,35 @@ Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
-You are going to move previously created resource(DevOps repository) from `base` to `repos` state.
-Hint: Keep in mind that there are 3 instances: GitHub resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
+You are going to move (rename) previously created resource.
 
-- Move The created GitHub repository `tf-lab-devops` resource from the `base` state to the `repos` using `terraform state mv` command.
-- Update both configurations according to this move.
-- Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
+Hint: The purpose of the `terraform state mv` command in Terraform is to move or rename resources within a Terraform state. This is useful for reorganizing resources within your infrastructure, for example, if you want to rename a resource or move it from one module to another. When you move a resource, Terraform updates the state file to reflect the new location or name of the resource, and generates a plan to update the infrastructure to match the new state. The terraform mv command should be used with care, as it can impact existing infrastructure and potentially result in changes to your environment.
+
+- Change the created GitHub repository `tf-lab-devops` resource name in the configuration file.
+
+  Example:
+
+  From:
+  ```
+  resource "github_repository" "tf_epam_lab_base_repository" {
+    ...
+  }
+  ```
+  To:
+  ```
+  resource "github_repository" "tf_epam_lab_devops_repository" {
+    ...
+  }
+  ```
+- Rename the `github_repository` resource by `terraform state mv` command.
+Example:
+  ```
+  terraform state mv github_repository.tf_epam_lab_base_repository github_repository.tf_epam_lab_devops_repository
+  ```
+
+- Run `terraform plan` on both configurations and observe the changes. 
+
+  Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
 
@@ -321,7 +370,7 @@ Learn about the [terraform import](https://www.terraform.io/docs/cli/import/inde
 You are going to import a new resource (repository `tf-lab-backend`) to your state.
 Hint: Keep in mind that there are 3 instances: GitHub resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Importing a resource" is importing its attributes into a Terraform state. Then you have to add said resource to the destination configuration (this action is not automated).
 
-- Create a GitHub repository in the created GitHub organization via GitHub WebUI (`name="tf-lab-backend"`).
+- Create a public GitHub repository in the created GitHub organization via GitHub WebUI (`name="tf-lab-backend"`).
 - Add a new resource `github_repository` `tf_epam_lab_backend_repository` to the `repos` configuration.
 - Run `terraform plan` to see your changes but do not apply changes.
 - Import `tf_epam_lab_backend_repository` repository to the `repos` state.
