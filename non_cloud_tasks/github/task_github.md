@@ -15,9 +15,10 @@
   * [TASK 10 - Move resources](task_github.md#task-10-move-resources)
   * [TASK 11 - Import resources](task_github.md#task-11-import-resources)
   * [TASK 12 - Use data discovery](task_github.md#task-12-use-data-discovery)
+  * [TASK 13 - Configuring GitHub Action Workflow](task_github.md#task-13-configuring-github-action-workflow)
 - [Advanced tasks](task_github.md#advanced-tasks)
-  * [TASK 13 - Create dynamically manageable resources](task_github.md#task-13-create-dynamically-manageable-resources)
-  * [TASK 14 - Modules](task_github.md#task-14-modules)
+  * [TASK 14 - Create dynamically manageable resources](task_github.md#task-14-create-dynamically-manageable-resources)
+  * [TASK 15 - Modules](task_github.md#task-15-modules)
   
 
 
@@ -31,6 +32,8 @@ You will use Terraform with the GitHub provider to create 2 separate Terraform c
  2) Repos configuration
 After you’ve created the configuration, we will work on its optimization like using a data-driven approach and creating modules.
 
+As a result, at the end of this lab, you will get a managed by terraform GitHub organization shown in the image below.
+![alt text](images/GHLabDiagram.png)
 
 ## PRE-REQUISITES
 1. Fork current repository. A fork is a copy of a project and this allows you to make changes without affecting the original project.
@@ -121,7 +124,7 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 
 Apply your changes when ready.
 
-**Note:** Actually, the data for these secrets are used for [dummy API](https://dummyjson.com). So, they are fake secrets. These secrets will be used later in the one of the folowing tasks.
+**Note:** Actually, the data for these secrets are used for [lab_rest_api](lab_rest_api). So, they are fake secrets. These secrets will be used later in the one of the folowing tasks.
 
 ### Definition of DONE:
 
@@ -137,7 +140,8 @@ Create a team and team's members for your GitHub organization:
 
 -	Create `members.tf`.
 - Create an organization team (`name="devops-team"`, `privacy="secret"`)
--	Create at least 1-2 members (`role="member"`) and add them to the team.
+- Create an organization team (`name="nodejs-team"`, `privacy="secret"`)
+-	Create at least 1-2 members (`role="member"`) and add them to the teams.
 
 **Hint**: Use your colleagues' GitHub account usernames as members in terms of this lab.
 
@@ -149,7 +153,7 @@ Apply your changes when ready.
 ### Definition of DONE:
 
 - Terraform created resources with no errors
-- GitHub team and members resources created as expected (check GitHub WebUI)
+- GitHub teams and members resources created as expected (check GitHub WebUI)
 - Push *.tf configuration files to git
 
 ## TASK 4 - Create a security manager
@@ -161,7 +165,7 @@ GitHub Security Managers is a feature in GitHub that allows an organization to d
 Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
 Create a GitHub organization project resource with attributes:
--   Create add a new team resource (`name="security-team"`).
+-   Create add a new team resource (`name="security-team"`, `privacy="closed"`).
 -   Create add a new security manager for the organization and assign to the created team.
 
 Store all resources from this task in the `security.tf` file.
@@ -200,12 +204,12 @@ Apply your changes when ready.
 - Push *.tf configuration files to git
 
 ## TASK 6 - Form TF Output
-Ensure that current directory is  `/tf-epam-lab/non_cloud_task/github/base`
+Ensure that current directory is `/tf-epam-lab/non_cloud_task/github/base`
 
 Create outputs for your configuration:
 
 - Create `outputs.tf` file.
-- Following outputs are required: `organization_id`, `teams_slugs` (names) [set of strings], `security_manager_team_slug` (name), `secret_name`, `base_repository_name`.
+- Following outputs are required: `organization_id`, `teams_ids` [set of strings], `security_manager_team_slug` (name), `secret_names`[set of strings], `base_repository_name` (name).
 
 Store all resources from this task in the `outputs.tf` file.
 
@@ -240,13 +244,15 @@ Apply your changes when ready.
 
 - Push *.tf configuration files to git
 
-## TASK 8 - Create a Secure Public Repository
+## TASK 8 - Create Secure Public Repositories
 
-Ensure that the current directory is  ``/tf-epam-lab/non_cloud_task/github/repos`
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/repos`
+
+Store all resources from this task in the `repository.tf` file.
 
 - Create a repository resource with attributes:
-    - `name=tf-lab-frontend`
-    - `description="TF EPAM lab repository for frontend app"`,
+    - `name=tf-lab-app`
+    - `description="TF EPAM lab repository for nodejs app"`,
     - `vulnerability_alerts=true`,
     - `visibility="public"`,
     - `has_issues=true`,
@@ -257,30 +263,18 @@ Ensure that the current directory is  ``/tf-epam-lab/non_cloud_task/github/repos
     - `allow_rebase_merge=true`,
     - `delete_branch_on_merge=true`,
     - `auto_init=true`.
-- Assign `push` permissions to the repository for `devops-team` and `security-team`.
-- Provide access to the created organization secret for the repository.
-- Create `.github/CODEOWNERS` files with the content:
+- Assign `push` permissions to the repository for `nodejs-team`, `security-team` and `pull` permissions for `devops-team`.
+- Create `.github/CODEOWNERS` files with the content using `terraform resource`:
     ```
     *      @ORGANIZATION_NAME/SECURITY_TEAM_SLUG
     ```
   
   **INFO**: The purpose of a CODEOWNERS file in GitHub is to specify which users or teams are responsible for reviewing and maintaining specific parts of a repository. When a pull request is created, GitHub uses the information in the CODEOWNERS file to determine who should be requested for review based on the files that were changed. This helps to ensure that changes to code are reviewed by the appropriate people and helps to maintain quality and consistency in the codebase.
-  
-- For the repository `tf-lab-frontend` add permission to run GitHub actions. [Hint](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_organization_permissions)
-- Create `.github/workflows/reusable_node_vulnerability_scan.yml` file. Content for this file is in [this file](lab_files/reusable_node_vulnerability_scan.yml). This is a simple GitHub action workflow which performs a quick authenticated vulnerability scan of the dummy REST API. This scan will be run manually from the GitHub Web GUI.
-- For authentication in the vulnerability scan previously created secrets should be used. It is required to add permissions for the created repository to used the secrets. In can be added as the attribute `selected_repository_ids` to the resource `github_actions_organization_secret` or by creating a resource `github_actions_organization_secret_repositories`.
-
-  
-  **INFO**: Centralized managing of GitHub actions by terraform usually may be used if a similar GitHub Action workflow is required for several repositories. It is a simple way to manage this.
-
-Store all resources from this task in the `repositories.tf` file.
 
 Run `terraform validate` and `terraform fmt` to check if your configuration valid and fits to a canonical format and style. Do this each time before applying your changes.
 Run `terraform plan` to see your changes.
 
 Apply your changes when you're ready.
-
-As a result a GitHub repository should be created with appropriate teams' permissions, a project and `CODEOWNERS` file should be created in the repository. 
 
 ### Definition of DONE:
 
@@ -288,11 +282,18 @@ As a result a GitHub repository should be created with appropriate teams' permis
 - GitHub repository is created as expected (check GitHub WebUI)
 - `CODEOWNERS` file exists in the repository.
 - Push *.tf configuration files to git
-
     
 # Working with Terraform state
 
 **Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks.
+
+When working with Terraform in a multiple teams environment, it is common for each team to have their own state file for the resources they are managing. This is because Terraform state is meant to be a shared resource, but it can be difficult to coordinate changes to the state file among multiple teams. Having separate state files for each team can help avoid conflicts and make it easier to manage changes to the infrastructure.
+
+Additionally, having separate state files can help with security and access control. Different teams may have different levels of access to different resources, and having separate state files can help ensure that each team only has access to the resources they need.
+
+In most cases, using separate state files for each team is recommended to help manage complexity and ensure that changes are made in a coordinated and controlled manner.
+
+For this lab, the first state file (`base` folder) belongs to the DevOps team, which manages the global GitHub organization settings, and the second state (`repos` folder) is managed by developers teams which usually work with repositories and their configurations. In the real environment, these state files may be more.
 
 ## TASK 9 - Move state to Postgres database
 
@@ -367,14 +368,18 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 
 Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
 
-You are going to import a new resource (repository `tf-lab-backend`) to your state.
+You are going to import a new resource (repository `tf-lab-spa`) to your state.
 Hint: Keep in mind that there are 3 instances: GitHub resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Importing a resource" is importing its attributes into a Terraform state. Then you have to add said resource to the destination configuration (this action is not automated).
 
-- Create a public GitHub repository in the created GitHub organization via GitHub WebUI (`name="tf-lab-backend"`).
-- Add a new resource `github_repository` `tf_epam_lab_backend_repository` to the `repos` configuration.
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/repos`. Use file `imported_repository.tf`.
+
+- Create a public GitHub repository in the created GitHub organization via GitHub WebUI (`name="tf-lab-spa"`).
+- Add a new resource `github_repository` `tf_epam_lab_spa_repository` to the `repos` configuration.
 - Run `terraform plan` to see your changes but do not apply changes.
-- Import `tf_epam_lab_backend_repository` repository to the `repos` state.
+- Import `tf_epam_lab_spa_repository` repository to the `repos` state.
 - Run `terraform plan` again to ensure that import was successful.
+
+**Note**: SPA - Single Page Application
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
 
@@ -386,12 +391,20 @@ Learn about [terraform data sources](https://www.terraform.io/docs/language/data
 
 In this task we are going to use a data driven approach instead to use remote state data source.
 
+#### base configuration
+
+Change the current directory to `/tf-epam-lab/non_cloud_task/github/base`
+
+Use a data source to request the resource `github_repository`. Use this datasource to request data about the repository which was created in the task 8.
+
+Store all resources from this task in the `data.tf` file.
+
 #### repos configuration
 Change the current directory to `/tf-epam-lab/non_cloud_task/github/repos`
 
 Refine your configuration:
 
-- Use a data source to request the following resources: `organization_id`, `organization_members`, `organization_teams`, `github_actions_organization_secrets`.
+- Use a data source to request the following resources: `organization_id`, `organization_teams`.
 
 Hint: These data sources should replace remote state outputs, therefore you can delete `data "terraform_remote_state" "base"` resource from your current state and the `outputs.tf` file from the `base` configuration. **Don't forget to replace references with a new data sources.**
 Hint: run `terraform refresh` command under `base` configuration to reflect changes.
@@ -405,9 +418,90 @@ If applicable all resources should be defined with the provider alias.
 Apply your changes when ready.
 
 
+## TASK 13 - Configuring GitHub Action Workflow
+
+In this lab we will configure a GitHub action workflow which performs `SCA`, `SAST` and `DAST` checks of the application.
+
+  **INFO**: 
+  
+  <details closed>
+  <summary>
+  - <strong>SCA</strong> (Software Composition Analysis) - a process of analyzing software components and their dependencies in order to identify known vulnerablities.
+  </summary>
+  SCA involves analyzing software dependencies and the third-party components used in an application. The purpose of SCA is to understand and manage the risks associated with using open source and third-party components in their software applications, such as license compliance issues, security vulnerabilities, and potential intellectual property concerns. By identifying and addressing these risks, organizations can improve the overall security and quality of their software applications.
+  <br>
+  SCA tools typically scan the source code, build files, and dependencies of an application to identify any open source or third-party components that are being used, along with their licenses, security vulnerabilities, and potential risks.
+  </details>
+
+  <details closed>
+  <summary>
+  - <strong>SAST</strong> (Static Application Security Testing) - a type of software testing that is used to identify security vulnerabilities in the source code (not dependencies like SCA) of an application before it is deployed.
+  </summary>
+  SAST tools analyze the application's source code and identify potential security vulnerabilities, such as SQL injection, cross-site scripting, and buffer overflow attacks. The analysis is done without actually executing the application, which is why it's called "static" testing.
+  <br>
+  SAST tools work by analyzing the source code of an application and comparing it against a set of predefined security rules or signatures. The tool will flag any lines of code that match these rules or signatures as potential security vulnerabilities, and then report them to the developer or security team.
+  <br>
+  The purpose of SAST is to identify and eliminate security vulnerabilities in the code before it is deployed, which can help to reduce the risk of cyber attacks and data breaches. By identifying and fixing vulnerabilities early in the software development process, organizations can improve the overall security and quality of their software applications.
+  </details>
+
+  <details closed>
+  <summary>
+  - <strong>DAST</strong> - Dynamic Application Security Testing - a type of software testing that is used to identify security vulnerabilities in a web application while it's running (not source code like SAST or software dependencies like SCA).
+  </summary>
+  DAST tools test the web application by simulating attacks against it and then analyze the application's response to these attacks. The attacks can include things like SQL injection, cross-site scripting, and parameter tampering.
+  <br>
+  DAST tools work by sending requests to the web application and analyzing the responses to identify vulnerabilities. The tool will look for things like error messages, server responses, and other signs that indicate that the application may be vulnerable to attack.
+  <br>
+  The purpose of DAST is to identify security vulnerabilities that may not be apparent in the application's source code. By testing the application while it's running, DAST tools can identify vulnerabilities that may only be exposed when the application is in a live environment.
+  <br>
+  DAST complements SAST by providing a different perspective on the application's security posture. While SAST focuses on the application's source code, DAST focuses on the application's behavior at runtime. Together, these two types of testing can help to identify and eliminate security vulnerabilities in a web application, improving the overall security and quality of the application.
+  </details>  
+
+
+Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
+
+All new resources should be written to the file `actions.tf`.
+
+- By default, GitHub actions are disabled in our organization. So, for the repository `tf-lab-app` add permission to run GitHub actions. [Hint](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_organization_permissions). Use datasource `github_repository` created in the task 12 to get repository id. 
+
+- During `DAST`, a GitHub action workflow will perform authenticated scan and it requires credentails for the test application. In order to avoid hard-coding the credentials GitHab action should use values from organization secrets. Add permissions for the repository to organization secrets which were created in the task 2. In can be added as the attribute `selected_repository_ids` to the resource `github_actions_organization_secret`.
+
+- Downloads files of the test application from this [repository](https://github.com/Ovi/DummyJSON). Replace file `.eslintrc.js` with the [file](lab_rest_api/.eslintrc.js) from the folder `lab_rest_api`.
+
+  <details closed>
+  <summary>
+  - <strong>.eslintrc.js</strong> - configuration file for ESLint.
+  </summary>
+   <strong>ESLint</strong> - is a tool for identifying and reporting on patterns found in ECMAScript/JavaScript code, with the goal of making code more consistent and avoiding bugs. In this lab it will be used for SAST scans.
+  </details>  
+
+
+- Add files from this repository to the `tf-lab-app` repository using `git`. Please do not forget to put these files to the root of the repository:
+  ```
+  .gitignore
+  .prettierrc
+  .eslintrc.js
+  ```
+
+- Add the GitHub action workflow configuration [file](lab_rest_api/workflow.yml) to the repository `tf-lab-app` using `git`. You must store workflow files in the `.github/workflows` directory of the repository.
+
+Run `terraform validate` and `terraform fmt` to check if your configuration valid and fits to a canonical format and style. Do this each time before applying your changes.
+Run `terraform plan` to see your changes.
+
+Apply your changes when you're ready.
+
+As a result, you should have code of the test REST API added to the newly created repository. For this code a new GitHub action will be added. The added GitHub action will be perform SCA, SAST and DAST testing.
+
+### Definition of DONE:
+
+- Terraform created resources with no errors
+- GitHub repository contains code of the simple web application.
+- GitHub Action works correctly.
+- Push *.tf configuration files to git
+
 # Advanced tasks
 
-## TASK 13 - Create dynamically manageable resources
+## TASK 14 - Create dynamically manageable resources
 
 Ensure that the current directory is  `/tf-epam-lab/non_cloud_task/github/base`
 
@@ -440,14 +534,50 @@ Apply your changes when ready.
 - Terraform imported resources with no errors
 - GitHub resources are NOT changed (check GitHub WebUI)
 
-## TASK 14 - Modules
+## TASK 15 - Modules
 
 Learn about [terraform modules](https://www.terraform.io/docs/language/modules/develop/index.html)
 
 Refine your configurations:
 
 - Refine `repos` configuration by creating a repository module.
-
+- Expected input variables:
+  - Repositories parameters:
+    - `name`
+    - `description` (default value: `""`)
+    - `homepage` (default value: `""`)
+    - `private` (default value: `false`)
+    - `has_issues` (default value: `false`)
+    - `has_projects` (default value: `false`)
+    - `has_wiki` (default value: `false`)
+    - `default_branch` (default value: `"main"`)
+    - `allow_squash_merge` (default value: `true`)
+    - `allow_merge_commit` (default value: `true`)
+    - `allow_rebase_merge` (default value: `true`)
+    - `delete_branch_on_merge` (default value: `true`)
+  - List of branches with configuration (for protected branches):
+    - `name`
+    - `requiresApprovingReviews` (default value: `true`)
+    - `requiredApprovingReviewCount` (default value: `1`)
+    - `dismissesStaleReviews` (default value: `false`)
+    - `requiresCodeOwnerReviews` (default value: `false`)
+    - `requiresStatusChecks` (default value: `false`)
+    - `requiredStatusCheckContexts` (default value: `[]`)
+    - `requiresStrictStatusChecks` (default value: `false`)
+    - `requiresCommitSignatures` (default value: `false`)
+    - `restrictsPushes` (default value: `false`)
+    - `pushActorIds` (default value: `[]`)
+    - `isAdminEnforced` (default value: `false`)
+  - List of teams and their access levels. For example:
+    ```yml
+    teams:
+    - name: devops-team
+      permissions: pull
+    - name: nodejs-team
+      permissions: push
+    ```
+  - List of names of the Organizational Secrets
+  - List of repositories secrets
 
 Store your modules in `/tf-epam-lab/non_cloud_task/github/modules` subfolders.
 
