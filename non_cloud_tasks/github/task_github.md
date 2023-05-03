@@ -141,9 +141,9 @@ Create a team and team's members for your GitHub organization:
 -	Create `members.tf`.
 - Create an organization team (`name="devops-team"`, `privacy="secret"`)
 - Create an organization team (`name="nodejs-team"`, `privacy="secret"`)
--	Create at least 1-2 members (`role="member"`) and add them to the teams.
+-	Create 1 member (`role="member"`) and add this member to one of the the teams.
 
-**Hint**: Use your colleagues' GitHub account usernames as members in terms of this lab.
+**Hint**: Use your colleagues' GitHub account username as a member in terms of this lab.
 
 Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
 Run `terraform plan` to see your changes.
@@ -266,7 +266,7 @@ Store all resources from this task in the `repository.tf` file.
 - Assign `push` permissions to the repository for `nodejs-team`, `security-team` and `pull` permissions for `devops-team`.
 - Create `.github/CODEOWNERS` files with the content using `terraform resource`:
     ```
-    *      @ORGANIZATION_NAME/SECURITY_TEAM_SLUG
+    * @ORGANIZATION_NAME/SECURITY_TEAM_SLUG
     ```
   
   **INFO**: The purpose of a CODEOWNERS file in GitHub is to specify which users or teams are responsible for reviewing and maintaining specific parts of a repository. When a pull request is created, GitHub uses the information in the CODEOWNERS file to determine who should be requested for review based on the files that were changed. This helps to ensure that changes to code are reviewed by the appropriate people and helps to maintain quality and consistency in the codebase.
@@ -284,6 +284,8 @@ Apply your changes when you're ready.
 - Push *.tf configuration files to git
     
 # Working with Terraform state
+
+**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository. 
 
 **Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks.
 
