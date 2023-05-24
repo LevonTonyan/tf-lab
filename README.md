@@ -9,8 +9,11 @@ A set of the Terraform training materials including self-study materials and han
 - <b><mark>[Core concepts of IaC and Terraform](concepts.md)</mark></b>
 
 ## Tasks
+Please do only lab that mentioned in your training. Advanced tasks are optional.
 
-- <b><mark>[Terraform practical lab](general_task.md)</mark></b>
+- <b><mark>[Terraform in Cloud: practical lab](general_task.md)</mark></b>
+
+- <b><mark>[Terraform with GitHub: practical lab](non_cloud_tasks/github/task_github.md)</mark></b>
 
 
 ## Quizes
