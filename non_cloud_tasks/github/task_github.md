@@ -33,7 +33,7 @@ You will use Terraform with the GitHub provider to create 2 separate Terraform c
 After you’ve created the configuration, we will work on its optimization like using a data-driven approach and creating modules.
 
 As a result, at the end of this lab, you will get a managed by terraform GitHub organization shown in the image below.
-![alt text](images/GHLabDiagram.png)
+![alt text](images/lab_diagram.png)
 
 ## PRE-REQUISITES
 1. Fork current repository. A fork is a copy of a project and this allows you to make changes without affecting the original project.
