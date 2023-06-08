@@ -159,7 +159,7 @@ For a brief but still substantial overall explanation of what Terraform is pleas
 
 - [A longer (2+ hours) Terraform tutorial video](https://www.youtube.com/watch?v=SLB_c_ayRMo). More comprehensive and detailed.
 
-- [Stacked resourced issue](./examples/stacked_resources.md)
+- [Stacked resource issue](./examples/stacked_resources.md)
 
 ## Check yourself
 
