@@ -1,15 +1,21 @@
-- [Introduction](concepts.md#introduction)
+<br><br>
+![ˈtɛrəfɔːm](https://i.imgur.com/RXAzrGo.jpg)
+
+
+## Content:
+
   * [What is IaC and Terraform?](concepts.md#what-is-infrastructure-as-code-iac-and-terraform)
   * [Core concepts](concepts.md#core-concepts)
   * [Terraform Code Snippets](concepts.md#terraform-code-snippets)
   * [Terraform in 15 minutes](concepts.md#terraform-in-15-minutes)
   * [Useful links](concepts.md#useful-links)
   * [Check yourself](concepts.md#check-yourself)
+  * [Terraform best practices](concepts.md#terraform-best-practices)
+  * [Certification and Trainings](concepts.md#certification-and-trainings)
+
+<br><br>
 
 
-![ˈtɛrəfɔːm](https://i.imgur.com/RXAzrGo.jpg)
-
-# Introduction
 ## What is Infrastructure as Code (IaC) and Terraform?
 
 Infrastructure as code is a mainstream practice of working with cloud providers. In a nutshell, it allows engineers to effectively manage their cloud resources using code. Terraform is one of the most popular (and not without reason!) IaC tools available today. It allows to declare the infrastructure using simple and readable code, which the tool itself then uses to provision all described resources in a necessary order.
@@ -153,18 +159,7 @@ For a brief but still substantial overall explanation of what Terraform is pleas
 
 - [A longer (2+ hours) Terraform tutorial video](https://www.youtube.com/watch?v=SLB_c_ayRMo). More comprehensive and detailed.
 
-- Terraform best practices links:
-    - [Stacked resourced issue](./examples/stacked_resources.md).
-
-    - [A comprehensive compilation of best practices by Anton Babenko and Terraform community](https://www.terraform-best-practices.com/)
-
-    - [A few more best practices and useful hints](https://github.com/ozbillwang/terraform-best-practices)
-
-    - [Workflow recommended practices by Hashicorp](https://www.terraform.io/cloud-docs/guides/recommended-practices)
-
-- [EPAM Terraform Associate Certification Preparation](https://videoportal.epam.com/playlist/VYjK5oJ0/play/V7goNx70) (5 videos). A set of lectures to prepare for the official Terraform certification process.
-
-- [EPAM Terraform Associate Certification Overview](https://kb.epam.com/download/attachments/1109962808/Terraform%20Associate%20Certification%20Preparation%20by%20Armando%20Herra.pptx?version=1&modificationDate=1622464133944&api=v2). Clear and concise presentation you can use as a starting point on the road to getting the Terraform Associate certificate.
+- [Stacked resourced issue](./examples/stacked_resources.md)
 
 ## Check yourself
 
@@ -184,3 +179,19 @@ And some additional questions to think about:
 4. What will happen if you delete the entire `.terraform` directory in your configuration?
 
 If you're certain you have answered all (or most) of them correctly, great job! You're most definitely ready for the main part of this lab.
+
+
+## Terraform best practices
+
+  - [A comprehensive compilation of best practices by Anton Babenko and Terraform community](https://www.terraform-best-practices.com/)
+
+  - [A few more best practices and useful hints](https://github.com/ozbillwang/terraform-best-practices)
+
+  - [Workflow recommended practices by Hashicorp](https://www.terraform.io/cloud-docs/guides/recommended-practices)
+
+
+## Certification and Trainings
+
+- [EPAM Terraform Associate Certification Preparation](https://videoportal.epam.com/playlist/VYjK5oJ0/play/V7goNx70) (5 videos). A set of lectures to prepare for the official Terraform certification process.
+
+- [EPAM Terraform Associate Certification Overview](https://kb.epam.com/download/attachments/1109962808/Terraform%20Associate%20Certification%20Preparation%20by%20Armando%20Herra.pptx?version=1&modificationDate=1622464133944&api=v2). Clear and concise presentation you can use as a starting point on the road to getting the Terraform Associate certificate.
