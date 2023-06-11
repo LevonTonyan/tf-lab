@@ -26,10 +26,16 @@
 
  
 ### Explanation of the Solution 
-You will use Terraform with cloud provider to create 2 separate Terraform configurations:
- 1) Base configuration
- 2) Compute configuration
+You will use Terraform with cloud provider to create 2 separate Terraform configurations/states:
+ 1) Base configuration (Where we'll create some resource required on the next state)
+ 2) Compute configuration (Here we'll create autoscaling group with node running behind the Load Balancer)
+
+
 After you’ve created configuration, we will work on its optimization like using data driven approach and creating modules.
+
+#### Deployment diagram
+
+ ![](./tf_cloud_deployment.png)
 
 
 ## PRE-REQUISITES
@@ -144,7 +150,7 @@ Create a custom ssh key-pair to access your cloud compute instances:
   
     `export TF_VAR_ssh_key="YOUR_PUBLIC_SSH_KEY_STRING"`
 
-  Never store you secrets inside the code!
+  <mark>Never store you secrets inside the code!</mark>
 
 - Run `terraform plan` and observe the output.
 
@@ -330,6 +336,9 @@ Apply your changes when ready.
 - Check your efforts through the proctor gitlab pipeline.
 
 ## TASK 8 - Configure application instances behind a Load Balancer
+
+**Note**: In this task we are going to join all resources created before to run a compute node using template with a start-up script. See [deployment diagram](#deployment-diagram).
+
 
 Ensure that the current directory is  `~/tf-epam-lab/compute`.
 
