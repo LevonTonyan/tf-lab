@@ -27,7 +27,7 @@
  
 ### Explanation of the Solution 
 You will use Terraform with cloud provider to create 2 separate Terraform configurations/states:
- 1) Base configuration (Where we'll create some resource required on the next state)
+ 1) Base configuration (Where we'll create some resource required in another configuration)
  2) Compute configuration (Here we'll create autoscaling group with node running behind the Load Balancer)
 
 
