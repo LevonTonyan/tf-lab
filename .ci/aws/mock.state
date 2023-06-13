@@ -1,0 +1,54 @@
+{
+    "version": 4,
+    "terraform_version": "1.3.6",
+    "serial": 2,
+    "lineage": "9853e671-c0a8-4e65-5560-2f44be502c5c",
+    "outputs": {
+      "iam_instance_profile_name": {
+        "value": "mock-instance-profile-name",
+        "type": "string"
+      },
+      "key_name": {
+        "value": "epam-tf-ssh-key",
+        "type": "string"
+      },
+      "public_subnet_ids": {
+        "value": [
+          "mock-subnet-id-a",
+          "mock-subnet-id-b",
+          "mock-subnet-id-c"
+        ],
+        "type": [
+          "tuple",
+          [
+            "string",
+            "string",
+            "string"
+          ]
+        ]
+      },
+      "s3_bucket_name": {
+        "value": "mock-s3-bucket-name",
+        "type": "string"
+      },
+      "security_group_id_http": {
+        "value": "mock-http-sg-id",
+        "type": "string"
+      },
+      "security_group_id_http_lb": {
+        "value": "mock-http-lb-sg-id",
+        "type": "string"
+      },
+      "security_group_id_ssh": {
+        "value": "mock-ssh-sg-id",
+        "type": "string"
+      },
+      "vpc_id": {
+        "value": "mock-vpc-id",
+        "type": "string"
+      }
+    },
+    "resources": [],
+    "check_results": null
+  }
+  

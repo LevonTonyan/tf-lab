@@ -1,0 +1,51 @@
+{
+    "version": 4,
+    "terraform_version": "1.3.6",
+    "serial": 21,
+    "lineage": "8808252c-c12c-fa5f-1875-df99e9bc9b28",
+    "outputs": {
+      "base_repository_name": {
+        "value": "tf-lab-devops",
+        "type": "string"
+      },
+      "organization_id": {
+        "value": "121174479",
+        "type": "string"
+      },
+      "secret_names": {
+        "value": [
+          "USERNAME",
+          "PASSWORD"
+        ],
+        "type": [
+          "tuple",
+          [
+            "string",
+            "string"
+          ]
+        ]
+      },
+      "security_manager_team_slug": {
+        "value": "security-team",
+        "type": "string"
+      },
+      "teams_slugs": {
+        "value": [
+          "7491077",
+          "7491078",
+          "7491102"
+        ],
+        "type": [
+          "tuple",
+          [
+            "string",
+            "string",
+            "string"
+          ]
+        ]
+      }
+    },
+    "resources": [],
+    "check_results": null
+  }
+  
