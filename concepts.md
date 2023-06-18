@@ -177,6 +177,8 @@ And some additional questions to think about:
 2. What will happen if you delete you Terraform state file?
 3. What will happen if you delete a provider from your local `.terraform` directory in your configuration?
 4. What will happen if you delete the entire `.terraform` directory in your configuration?
+5. What will happen if you import existing resource with the following command: 'terraform import aws_s3_bucket.my_super_storage {bucket-name}'? Do you need to do anything else to manage this resource?
+6. You've created IAM user and credentials using 'aws_iam_access_key' resource. After some time you'd like to import that user to another state and find that according to [documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_access_key) secret cannot be imported. What should you do then?
 
 If you're certain you have answered all (or most) of them correctly, great job! You're most definitely ready for the main part of this lab.
 
