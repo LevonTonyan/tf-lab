@@ -43,6 +43,7 @@ After you’ve created configuration, we will work on its optimization like usin
 2. Clone the forked repository to you workstation. All actions should be done under your fork and Terraform gets it context from your local clone working directory: 
     - Change current directory to `/tf-epam-lab/base` folder and create `root.tf` file. 
     - Add a `terraform {}` empty block to this file.
+    - Create epmty files `variables.tf` and `locals.tf`. These files witll be used for variables and local variables, but also they are required for automated proctor checks.
     - For AWS:
       - Create an AWS provider block inside `root.tf` file with the following attributes: 
         - `region = "us-east-1"`
@@ -87,9 +88,9 @@ Create a network stack for your infrastructure:
 
 -	**VPC**: `name={StudentName}-{StudentSurname}-01-vpc`, `cidr=10.10.0.0/16`
 -	**Public subnets**:
-    - `name={StudentName}-{StudentSurname}-01-subnet-public-a`, `cidr=10.10.1.0/24`, `az=a`)
-    - `name={StudentName}-{StudentSurname}-01-subnet-public-b`, `cidr=10.10.3.0/24`, `az=b`)
-    - `name={StudentName}-{StudentSurname}-01-subnet-public-c`, `cidr=10.10.5.0/24`, `az=c`)
+    - `name={StudentName}-{StudentSurname}-01-subnet-public-a`, `cidr=10.10.1.0/24`, `az=a`
+    - `name={StudentName}-{StudentSurname}-01-subnet-public-b`, `cidr=10.10.3.0/24`, `az=b`
+    - `name={StudentName}-{StudentSurname}-01-subnet-public-c`, `cidr=10.10.5.0/24`, `az=c`
 -	**Internet gateway**: `{StudentName}-{StudentSurname}-01-igw`
 -	**Routing table to bind IGW with Public subnets**: `name={StudentName}-{StudentSurname}-01-rt`
 
@@ -97,18 +98,19 @@ Create a network stack for your infrastructure:
 
 -	**VPC**: `name={StudentName}-{StudentSurname}-01-vpc`, `auto_create_subnetworks=false`
 -	**Public subnetworks**:
-    - `name={StudentName}-{StudentSurname}-01-subnetwork-central`, `cidr=10.10.1.0/24`, `region=us-central1`)
-    - `name={StudentName}-{StudentSurname}-01-subnetwork-east`, `cidr=10.10.3.0/24`, `region=us-east1`)
+    - `name={StudentName}-{StudentSurname}-01-subnetwork-central`, `cidr=10.10.1.0/24`, `region=us-central1`
+    - `name={StudentName}-{StudentSurname}-01-subnetwork-east`, `cidr=10.10.3.0/24`, `region=us-east1`
 
 ### For Azure:
 - **Resource Group**: `name={StudentName}-{StudentSurname}-01`
 -	**Virtual Network**: `name={StudentName}-{StudentSurname}-01-vnet-us-central`, `cidr=10.10.0.0/16`, `location="centralus"`
--	**Subnets**: `name={StudentName}-{StudentSurname}-01-subnet`, `cidr=10.10.1.0/24`)
+-	**Subnets**: `name={StudentName}-{StudentSurname}-01-subnet`, `cidr=10.10.1.0/24`
 
 **Hint**: A local value assigns a name to an expression, so you can use it multiple times within a module without repeating it. 
 
 Store all resources from this task in the `network.tf` file.
 Store all locals in `locals.tf`.
+If you use terraform variables, store them in `variables.tf`.
 
 Equip all possible resources with following tags or labels:
   - `Terraform=true`, 
@@ -186,7 +188,7 @@ Create an object bucket as the storage for your infrastructure:
   - Create a storage account. Name this account `epamtflab${random_string.my_numbers.result}` to provide it with a unique name.
   - Create a new storage container with the name `epam-tf-lab-container`
 
-  **Hint** See [random_string](https://registry.terraform.io/providers/hashicorp/random/) latest/docs/resources/string) documentation for details.
+  **Hint** See [random_string](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/string) documentation for details.
 
 -	Set default permissions for the object storage as private. Never share your bucket with the whole world!
 
@@ -356,9 +358,9 @@ Create required resources:
   ```
 
 ### For AWS:
-- Create a Launch Template resource (`name=epam-tf-lab`, `image_id="actual Amazon Linux AMI2 image id"`, `instance_type=t2.micro`, `security_group_id={ssh-inbound-id,http-inbound-id}`, `key_name`, `iam_instance_profile`, `delete_on_termination = true`,  `user_data script`)
+- Create a Launch Template resource (`name=epam-tf-lab`, `image_id="actual Amazon Linux AMI2 image id"`, `instance_type=t2.micro`, `security_group_id={ssh-inbound-id,http-inbound-id}`, `key_name`, `iam_instance_profile`, `delete_on_termination = true`(for network interface),  `user_data script`)
 - Create an `aws_autoscaling_group` resource (`name=epam-tf-lab`, `max_size=min_size=1`, `launch_template=epam-tf-lab`)
-- Create an Application Loadbalancer and attach it to an auto-scaling group with `aws_autoscaling_attachment`. Configure `aws_autoscaling_group` to ignore changes to the `load_balancers` and `target_group_arns` arguments within a lifecycle configuration block (lb_port=80, instance_port=80, protocol=http, `security_group_id={lb-http-inbound-id}`).
+- Create an Application Loadbalancer ( `name=elb-epam-tf-lab`) and attach it to an auto-scaling group with `aws_autoscaling_attachment`. Configure `aws_autoscaling_group` to ignore changes to the `load_balancers` and `target_group_arns` arguments within a lifecycle configuration block (lb_port=80, instance_port=80, protocol=http, `security_group_id={lb-http-inbound-id}`).
 
 **Note:** Please keep in mind that AWS autoscaling group requires using a special format for `Tags` section!
 
