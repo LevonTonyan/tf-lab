@@ -43,7 +43,7 @@ After you’ve created configuration, we will work on its optimization like usin
 2. Clone the forked repository to you workstation. All actions should be done under your fork and Terraform gets it context from your local clone working directory: 
     - Change current directory to `/tf-epam-lab/base` folder and create `root.tf` file. 
     - Add a `terraform {}` empty block to this file.
-    - Create files `variables.tf` and `locals.tf`. These files witll be used for variables and local variables, but also they are required for automated proctor checks.
+    - Create epmty files `variables.tf` and `locals.tf`. These files witll be used for variables and local variables, but also they are required for automated proctor checks.
     - For AWS:
       - Create an AWS provider block inside `root.tf` file with the following attributes: 
         - `region = "us-east-1"`
