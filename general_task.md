@@ -433,10 +433,10 @@ Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
-You are going to move previously created resource from the task 3 from `base` to `compute` state.
+You are going to move previously created resource from the Task 2 from `base` to `compute` state.
 Hint: Keep in mind that there are 3 instances: cloud resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
 
-- Move the resource created in the task 3 from the `base` state to the `compute` using `terraform state mv` command:
+- Move the resource created in the Task 2 from the `base` state to the `compute` using `terraform state mv` command:
   ### For AWS:
   - The `epam-tf-ssh-key` AWS Key Pair resource.
   ### For GCP:
