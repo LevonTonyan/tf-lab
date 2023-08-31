@@ -10,11 +10,11 @@
   * [TASK 6 - Form TF Output](general_task.md#task-6-form-tf-output)
   * [TASK 7 - Configure a remote data source](general_task.md#task-7-configure-a-remote-data-source)
   * [TASK 8 - Configure application instances behind a Load Balancer](general_task.md#task-8-configure-application-instances-behind-a-load-balancer)
+  * [TASK 9 - Use data discovery](general_task.md#task-12-use-data-discovery)
 - [Working with Terraform state](general_task.md#working-with-terraform-state)
-  * [TASK 9 - Move state to other backends](general_task.md#task-9-move-state-to-other-backends)
-  * [TASK 10 - Move resources](general_task.md#task-10-move-resources)
-  * [TASK 11 - Import resources](general_task.md#task-11-import-resources)
-  * [TASK 12 - Use data discovery](general_task.md#task-12-use-data-discovery)
+  * [TASK 10 - Move state to other backends](general_task.md#task-9-move-state-to-other-backends)
+  * [TASK 11 - Move resources](general_task.md#task-10-move-resources)
+  * [TASK 12 - Import resources](general_task.md#task-11-import-resources)
 - [Advanced tasks](general_task.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](general_task.md#task-13-expose-node-output-with-nginx)
   * [TASK 14 - Modules](general_task.md#task-14-modules)
@@ -397,12 +397,61 @@ As a result, each time a cloud compute instance launches a new file should be cr
 - After a new instance launch, a new text file appears in the cloud object storage with the appropriate text.
 - Push *.tf configuration files to git
 - Check your efforts through the proctor gitlab pipeline (if a pipeline configured)
-    
+
+## TASK 9 - Use data discovery
+**Mandatory**: Please do not proceed to TASKS  9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository and merge this change. This will disable the proctor checks. Proctor cannot access to the resources in non-local state therefore it should be disabled.
+
+
+Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
+
+In this task we are going to use a data driven approach instead to use remote state data source. This approach could be more flexible and remove dependency between states.
+
+#### base configuration
+Change current directory to `~/tf-epam-lab/base`
+
+Refine your configuration :
+- Use a data source to request
+  ### For AWS:
+  - An account ID and region for the provider.
+  ### For GCP:
+  - A project numeric ID and default service account email.
+  ### For Azure:
+  - A Subscription ID and a Client ID of the current user.
+
+Store all resources from this task in the `data.tf` file.
+
+Refer to this data sources in your in case it works. E.g. Azure Subscription ID is required for most resources but not AWS Accound Id.
+
+#### compute configuration
+Change the current directory to `~/tf-epam-lab/compute`
+
+Refine your configuration:
+
+- Use a data source to request resource group created in the `~/tf-epam-lab/base` and assign it to your resources.
+
+### For AWS:
+- Following data sources are required: `vpc_id`, `public_subnet_ids`[set of strings], `security_group_id_ssh`, `security_group_id_http`, `security_group_id_http_lb`; As for the `iam_instance_profile_name`, `key_name` and  `s3_bucket_name` - they are contain simple text and could be strictly defined with locals without calling data sources.
+### For GCP:
+- Following data sources are required: `vpc_id`, `subnetworks_ids`[set of strings], `project_metadata_id`, `bucket_id`. As for the `service_account_email` - it's contains simple text and could be strictly defined with locals without calling data sources.
+### For Azure:
+- Following data sources are required: `subnet_ids`[set of strings], `network_security_group_id`, `user_managed_identity_id`. As for the `network_name`,`storage_container_name` and `storage_account_name`, - they are contain simple text and could be strictly defined with locals without calling data sources.
+
+
+Hint: These data sources should replace remote state outputs, therefore you can delete `data "terraform_remote_state" "base"` resource from your current state and the `outputs.tf` file from the `base` configuration. **Don't forget to replace references with a new data sources.**
+
+Hint: run `terraform refresh` command under `base` configuration to reflect changes.
+
+Store all resources from this task in the `data.tf` file.
+
+Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
+Run `terraform plan` to see your changes. Also you can use `terraform refresh`.
+If applicable all resources should be defined with the provider alias.
+
+Apply your changes when ready.
+
 # Working with Terraform state
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository. 
-
-## TASK 9 - Move state to other backends
+## TASK 10 - Move state to other backends
 
 Learn about terraform backends [here](https://developer.hashicorp.com/terraform/language/settings/backends/configuration)
 
@@ -431,7 +480,7 @@ Do not forget to change the path to the remote state for `compute` configuration
 Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
 
-## TASK 10 - Move resources
+## TASK 11 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -456,7 +505,7 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 - Terraform moved resources with no errors
 - All resources are NOT changed (check Cloud WebUI)
 
-## TASK 11 - Import resources
+## TASK 12 - Import resources
 
 Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
 
@@ -494,51 +543,6 @@ If applicable all resources should be defined with the provider alias.
 - All resources are NOT changed (check Cloud WebUI)
 
 
-## TASK 12 - Use data discovery
-Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
-
-In this task we are going to use a data driven approach instead to use remote state data source.
-
-#### base configuration
-Change current directory to `~/tf-epam-lab/base`
-
-Refine your configuration :
-- Use a data source to request
-  ### For AWS:
-  - An account ID and region for the provider.
-  ### For GCP:
-  - A project numeric ID and default service account email.
-  ### For Azure:
-  - A Subscription ID and a Client ID of the current user.
-
-Store all resources from this task in the `data.tf` file.
-
-Run `terraform validate`  and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
-Run `terraform plan` to see your changes. You can also use `terraform refresh`.
-If applicable all resources should be defined with the provider alias.
-
-Apply your changes when ready.
-
-#### compute configuration
-Change the current directory to `~/tf-epam-lab/compute`
-
-Refine your configuration:
-
-- Use a data source to request resource group created in the `~/tf-epam-lab/base` and assign it to your resources.
-
-Hint: These data sources should replace remote state outputs, therefore you can delete `data "terraform_remote_state" "base"` resource from your current state and the `outputs.tf` file from the `base` configuration. **Don't forget to replace references with a new data sources.**
-
-Hint: run `terraform refresh` command under `base` configuration to reflect changes.
-
-Store all resources from this task in the `data.tf` file.
-
-Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
-Run `terraform plan` to see your changes. Also you can use `terraform refresh`.
-If applicable all resources should be defined with the provider alias.
-
-Apply your changes when ready.
-
-
 # Advanced tasks
 
 ## TASK 13 - Expose node output with nginx
@@ -548,7 +552,7 @@ Ensure that the current directory is  `~/tf-epam-lab/compute`
 Change init script in the task 8 as follows:
 
 -   Nginx binary should be installed on instance (`port=80`).
--   Variables COMPUTE_INSTANCE_ID and COMPUTE_MACHINE_UUID should be defined (see Task 8).
+-   Environmnet variables `COMPUTE_INSTANCE_ID` and `COMPUTE_MACHINE_UUID` should be defined (see Task 8).
 -   Nginx default page should be configured to return the same text as we put previously into the cloud object storage in Task 8: "This message was generated on instance ${COMPUTE_INSTANCE_ID} with the following UUID ${COMPUTE_MACHINE_UUID}".
 -   Nginx server should be started.
 

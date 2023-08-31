@@ -10,11 +10,11 @@
   * [TASK 6 - Form TF Output](task_gcp.md#task-6-form-tf-output)
   * [TASK 7 - Configure a remote data source](task_gcp.md#task-7-configure-a-remote-data-source)
   * [TASK 8 - Create VM Instance/Instance Group/Load Balancer](task_gcp.md#task-8-create-vm-instanceinstance-groupload-balancer)
+  * [TASK 9 - Use data discovery](task_gcp.md#task-12-use-data-discovery)
 - [Working with Terraform state](task_gcp.md#working-with-terraform-state)
-  * [TASK 9 - Move state to Cloud Storage Bucket](task_gcp.md#task-9-move-state-to-cloud-storage-bucket)
-  * [TASK 10 - Move resources](task_gcp.md#task-10-move-resources)
-  * [TASK 11 - Import resources](task_gcp.md#task-11-import-resources)
-  * [TASK 12 - Use data discovery](task_gcp.md#task-12-use-data-discovery)
+  * [TASK 10 - Move state to Cloud Storage Bucket](task_gcp.md#task-9-move-state-to-cloud-storage-bucket)
+  * [TASK 11 - Move resources](task_gcp.md#task-10-move-resources)
+  * [TASK 12 - Import resources](task_gcp.md#task-11-import-resources)
 - [Advanced tasks](task_gcp.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_gcp.md#task-13-expose-node-output-with-nginx)
   * [TASK 14 - Modules](task_gcp.md#task-14-modules)
@@ -279,11 +279,47 @@ As a result vm instance should be launched by the instance groups and a new file
 - After a new instance launch, a new text file appears in the cloud storage bucket storage with the appropriate text.
 - Push *.tf configuration files to git
 
+
+## TASK 9 - Use data discovery
+**Mandatory**: Please do not proceed to TASKS  9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository and merge this change. This will disable the proctor checks. Proctor cannot access to the resources in non-local state therefore it should be disabled.
+
+Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
+
+In this task we are going to use a data driven approach instead to use remote state data source.
+
+#### base configuration
+Change current directory to `~/tf-epam-lab/base`
+
+Refine your configuration :
+- Use a data source to request an account ID,
+- Use a data source to request a region operate under.
+
+Store all resources from this task in the `data.tf` file.
+
+Refer to this data sources in your in case it works.
+
+#### compute configuration
+Change the current directory to `~/tf-epam-lab/compute`
+
+Refine your configuration:
+
+- Use a data source to request resource group created in the `~/tf-epam-lab/base` and assign it to your resources.
+- Following data sources are required: `vpc_id`, `subnetworks_ids`[set of strings], `project_metadata_id`, `bucket_id`. As for the `service_account_email` - it's contains simple text and could be strictly defined with locals without calling data sources.
+
+Hint: These data sources should replace remote state outputs, therefore you can delete `data "terraform_remote_state" "base"` resource from your current state and the `outputs.tf` file from the `base` configuration. **Don't forget to replace references with a new data sources.**
+Hint: run `terraform refresh` command under `base` configuration to reflect changes.
+
+Store all resources from this task in the `data.tf` file.
+
+Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
+Run `terraform plan` to see your changes. Also you can use `terraform refresh`.
+If applicable all resources should be defined with the provider alias.
+
+Apply your changes when ready.
+
 # Working with Terraform state
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. 
-
-## TASK 9 - Move state to Cloud Storage Bucket
+## TASK 10 - Move state to Cloud Storage Bucket
 
 Hint: Create a Cloud Storage Bucket(`name=epam-gcp-tf-state-${random_string}`) as a pre-requirement for this task. Please create the resource by a hands in GCP console. That resource will be out of our IaC approach as it will never be recreated.
 
@@ -301,7 +337,7 @@ Do not forget to change the path to the remote state for `compute` configuration
 Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
 
-## TASK 10 - Move resources
+## TASK 11 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -319,7 +355,7 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 - Terraform moved resources with no errors
 - GCP resources are NOT changed (check GCP Console)
 
-## TASK 11 - Import resources
+## TASK 12 - Import resources
 
 Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
 
@@ -340,30 +376,6 @@ If applicable all resources should be defined with the provider alias.
 
 - Terraform imported resources with no errors
 - GCP resources are NOT changed (check GCP Console)
-
-## TASK 12 - Use data discovery
-Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
-
-In this task we are going to use a data driven approach instead to use remote state data source.
-
-#### base configuration
-Change current directory to `~/tf-epam-lab/base`
-
-Refine your configuration :
-- Use a data source to request an account ID,
-- Use a data source to request a region operate under.
-
-Hint: These data sources should replace remote state outputs, therefore you can delete `data "terraform_remote_state" "base"` resource from your current state and the `outputs.tf` file from the `base` configuration. **Don't forget to replace references with a new data sources.**
-Hint: run `terraform refresh` command under `base` configuration to reflect changes.
-
-Store all resources from this task in the `data.tf` file.
-
-Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
-Run `terraform plan` to see your changes. Also you can use `terraform refresh`.
-If applicable all resources should be defined with the provider alias.
-
-Apply your changes when ready.
-
 
 # Advanced tasks
 

@@ -10,11 +10,11 @@
   * [TASK 6 - Form TF Output](task_aws.md#task-6-form-tf-output)
   * [TASK 7 - Configure a remote data source](task_aws.md#task-7-configure-a-remote-data-source)
   * [TASK 8 - Create EC2/ASG/ELB](task_aws.md#task-8-create-ec2asgelb)
+  * [TASK 9 - Use data discovery](task_aws.md#task-12-use-data-discovery)
 - [Working with Terraform state](task_aws.md#working-with-terraform-state)
-  * [TASK 9 - Move state to S3/Locking](task_aws.md#task-9-move-state-to-s3locking)
-  * [TASK 10 - Move resources](task_aws.md#task-10-move-resources)
-  * [TASK 11 - Import resources](task_aws.md#task-11-import-resources)
-  * [TASK 12 - Use data discovery](task_aws.md#task-12-use-data-discovery)
+  * [TASK 10 - Move state to S3/Locking](task_aws.md#task-9-move-state-to-s3locking)
+  * [TASK 11 - Move resources](task_aws.md#task-10-move-resources)
+  * [TASK 12 - Import resources](task_aws.md#task-11-import-resources)
 - [Advanced tasks](task_aws.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_aws.md#task-13-expose-node-output-with-nginx)
   * [TASK 14 - Modules](task_aws.md#task-14-modules)
@@ -269,71 +269,10 @@ As a result ec2 instance should be launched by autoscaling-group and a new file 
 - After a new instance launch, a new text file appears in the S3 bucket with the appropriate text.
 - Push *.tf configuration files to git
 - Check your efforts through the proctor gitlab pipeline.
-    
-# Working with Terraform state
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository. 
+## TASK 9 - Use data discovery
+**Mandatory**: Please do not proceed to TASKS  9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository and merge this change. This will disable the proctor checks. Proctor cannot access to the resources in non-local state therefore it should be disabled.
 
-## TASK 9 - Move state to S3/Locking
-
-Hint: Create an S3 Bucket(`name=epam-aws-tf-state-${random_string}`) and a DynamoDB table as a pre-requirement for this task. There are multiple ways to do this, including Terraform and CloudFormation. But
-please just create both resources by a hands in AWS console. Those resources will be out of our IaC approach as they will never be recreated.
-
-Learn about [terraform backend in AWS S3](https://www.terraform.io/docs/language/settings/backends/s3.html)
-
-Refine your configurations:
-
-- Refine `base` configuration by moving local state to a s3.
-- Refine `base` configuration by adding locking with DynamoDB.
-- Refine `compute` configuration by moving local state to a s3.
-- Refine `compute` configuration by adding locking with DynamoDB.
-
-Do not forget to change the path to the remote state for `compute` configuration.
-
-Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
-Run `terraform plan` to see your changes and re-apply your changes if needed.
-
-## TASK 10 - Move resources
-
-Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
-
-You are going to move previously created resource(IAM group) from `base` to `compute` state.
-Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
-
-- Move The created AWS key pair resource from the `base` state to the `compute` using `terraform state mv` command.
-- Update both configurations according to this move.
-- Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
-
-Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
-
-### Definition of DONE:
-
-- Terraform moved resources with no errors
-- AWS resources are NOT changed (check AWS Console)
-
-## TASK 11 - Import resources
-
-Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
-
-You are going to import a new resource (IAM group) to your state.
-Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Importing a resource" is importing its attributes into a Terraform state. Then you have to add said resource to the destination configuration (this action is not automated).
-
-- Create an IAM Role in AWS Console (`name="test-import"`).
-- Add a new resource aws_iam_role `test-import` to the `compute` configuration.
-- Run `terraform plan` to see your changes but do not apply changes.
-- Import `test-import` IAM role to the `compute` state.
-- Run `terraform plan` again to ensure that import was successful.
-
-Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
-If applicable all resources should be tagged with following tags:
-- `Terraform=true`,
-- `Project=epam-tf-lab`.
-If applicable all resources should be defined with the provider alias.
-
-- Terraform imported resources with no errors
-- AWS resources are NOT changed (check AWS Console)
-
-## TASK 12 - Use data discovery
 Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
 
 In this task we are going to use a data driven approach instead to use remote state data source.
@@ -370,7 +309,67 @@ Run `terraform plan` to see your changes. Also you can use `terraform refresh`.
 If applicable all resources should be defined with the provider alias.
 
 Apply your changes when ready.
+    
+# Working with Terraform state
 
+## TASK 10 - Move state to S3/Locking
+
+Hint: Create an S3 Bucket(`name=epam-aws-tf-state-${random_string}`) and a DynamoDB table as a pre-requirement for this task. There are multiple ways to do this, including Terraform and CloudFormation. But
+please just create both resources by a hands in AWS console. Those resources will be out of our IaC approach as they will never be recreated.
+
+Learn about [terraform backend in AWS S3](https://www.terraform.io/docs/language/settings/backends/s3.html)
+
+Refine your configurations:
+
+- Refine `base` configuration by moving local state to a s3.
+- Refine `base` configuration by adding locking with DynamoDB.
+- Refine `compute` configuration by moving local state to a s3.
+- Refine `compute` configuration by adding locking with DynamoDB.
+
+Do not forget to change the path to the remote state for `compute` configuration.
+
+Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
+Run `terraform plan` to see your changes and re-apply your changes if needed.
+
+## TASK 11 - Move resources
+
+Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
+
+You are going to move previously created resource(IAM group) from `base` to `compute` state.
+Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
+
+- Move The created AWS key pair resource from the `base` state to the `compute` using `terraform state mv` command.
+- Update both configurations according to this move.
+- Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
+
+Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
+
+### Definition of DONE:
+
+- Terraform moved resources with no errors
+- AWS resources are NOT changed (check AWS Console)
+
+## TASK 12 - Import resources
+
+Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
+
+You are going to import a new resource (IAM group) to your state.
+Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Importing a resource" is importing its attributes into a Terraform state. Then you have to add said resource to the destination configuration (this action is not automated).
+
+- Create an IAM Role in AWS Console (`name="test-import"`).
+- Add a new resource aws_iam_role `test-import` to the `compute` configuration.
+- Run `terraform plan` to see your changes but do not apply changes.
+- Import `test-import` IAM role to the `compute` state.
+- Run `terraform plan` again to ensure that import was successful.
+
+Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
+If applicable all resources should be tagged with following tags:
+- `Terraform=true`,
+- `Project=epam-tf-lab`.
+If applicable all resources should be defined with the provider alias.
+
+- Terraform imported resources with no errors
+- AWS resources are NOT changed (check AWS Console)
 
 # Advanced tasks
 
