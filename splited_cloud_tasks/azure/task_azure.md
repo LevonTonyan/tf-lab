@@ -10,11 +10,11 @@
   * [TASK 6 - Form TF Output](task_azure.md#task-6-form-tf-output)
   * [TASK 7 - Configure a remote data source](task_azure.md#task-7-configure-a-remote-data-source)
   * [TASK 8 - Create Virtual Machine/Scale Set/Load Balancer](task_azure.md#task-8-create-virtual-machinescale-setload-balancer)
+  * [TASK 9 - Use data discovery](task_azure.md#task-9-use-data-discovery)
 - [Working with Terraform state](task_azure.md#working-with-terraform-state)
-  * [TASK 9 - Move state to a storage container](task_azure.md#task-9-move-state-to-a-storage-container)
-  * [TASK 10 - Move resources](task_azure.md#task-10-move-resources)
-  * [TASK 11 - Import resources](task_azure.md#task-11-import-resources)
-  * [TASK 12 - Use data discovery](task_azure.md#task-12-use-data-discovery)
+  * [TASK 10 - Move state to a storage container](task_azure.md#task-10-move-state-to-a-storage-container)
+  * [TASK 11 - Move resources](task_azure.md#task-11-move-resources)
+  * [TASK 12 - Import resources](task_azure.md#task-12-import-resources)
 - [Advanced tasks](task_azure.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_azure.md#task-13-expose-node-output-with-nginx)
   * [TASK 14 - Modules](task_azure.md#task-14-modules)
@@ -294,12 +294,43 @@ As a result virtual machines should be launched by the scale set and a new file 
 - Azure resources created as expected (check Azure Portal)
 - After a new instance launch, a new text file appears in the storage container storage with the appropriate text.
 - Push *.tf configuration files to git
+
+## TASK 9 - Use data discovery
+**Mandatory**: Please do not proceed to TASKS  9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository and merge this change. This will disable the proctor checks. Proctor cannot access to the resources in non-local state therefore it should be disabled.
+
+Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
+
+In this task we are going to use a data driven approach instead to use remote state data source.
+
+#### base configuration
+Change current directory to `~/tf-epam-lab/base`
+
+Refine your configuration :
+- Use a data source to request a Subscription ID 
+- Use a data source to request a Client ID of the current user
+
+Store all resources from this task in the `data.tf` file. Refer to this data sources in your in case it works.
+
+#### compute configuration
+Change the current directory to `~/tf-epam-lab/compute`
+
+Refine your configuration:
+
+- Use a data source to request resource group created in the `~/tf-epam-lab/base` and assign it to your resources.
+- Following data sources are required: `subnet_ids`[set of strings], `network_security_group_id`, `user_managed_identity_id`. As for the `network_name`,`storage_container_name` and `storage_account_name`, - they are contain simple text and could be strictly defined with locals without calling data sources.
+
+Store all resources from this task in the `data.tf` file.
+
+Run `terraform validate`  and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
+Run `terraform plan` to see your changes. You can also use `terraform refresh`.
+If applicable all resources should be defined with the provider alias.
+
+Apply your changes when ready.
+
     
 # Working with Terraform state
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository. 
-
-## TASK 9 - Move state to a storage container
+## TASK 10 - Move state to a storage container
 
 Hint: Create a new storage account (`name=epamazurelab${random_string}`) and then a storage container (`name=epam-azure-tf-state`). There are multiple ways to do this, including Terraform and ARM. But
 please just create both resources by a hands in Azure Portal. Those resources will be out of our IaC approach as they will never be recreated.
@@ -316,7 +347,7 @@ Do not forget to change the path to the remote state for `compute` configuration
 Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
 
-## TASK 10 - Move resources
+## TASK 11 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -334,7 +365,7 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 - Terraform moved resources with no errors
 - Azure resources are NOT changed (check Azure Portal)
 
-## TASK 11 - Import resources
+## TASK 12 - Import resources
 
 Learn about the [terraform import](https://www.terraform.io/docs/cli/import/index.html) command.
 
@@ -355,26 +386,6 @@ If applicable all resources should be defined with the provider alias.
 
 - Terraform imported resources with no errors
 - Azure resources are NOT changed (check Azure Portal)
-
-## TASK 12 - Use data discovery
-Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
-
-In this task we are going to use a data driven approach instead to use remote state data source.
-
-#### base configuration
-Change current directory to `~/tf-epam-lab/base`
-
-Refine your configuration :
-- Use a data source to request a Subscription ID, 
-- Use a data source to request a Client ID of the current user.
-
-Store all resources from this task in the `data.tf` file.
-
-Run `terraform validate`  and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style. Do this each time before applying your changes.
-Run `terraform plan` to see your changes. You can also use `terraform refresh`.
-If applicable all resources should be defined with the provider alias.
-
-Apply your changes when ready.
 
 # Advanced tasks
 
