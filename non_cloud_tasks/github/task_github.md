@@ -14,6 +14,7 @@
   * [TASK 9 - Move state to Postgres database](task_github.md#task-9-move-state-to-postgres-database)
   * [TASK 10 - Move resources](task_github.md#task-10-move-resources)
   * [TASK 11 - Import resources](task_github.md#task-11-import-resources)
+- [Configuring GitHub Actions](task_github.md#configuring-github-Actions)
   * [TASK 12 - Use data discovery](task_github.md#task-12-use-data-discovery)
   * [TASK 13 - Configuring GitHub Action Workflow](task_github.md#task-13-configuring-github-action-workflow)
 - [Advanced tasks](task_github.md#advanced-tasks)
@@ -388,6 +389,7 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 - Terraform imported resources with no errors
 - GitHub resources are NOT changed (check GitHub WebUI)
 
+# Configuring GitHub Actions
 ## TASK 12 - Use data discovery
 Learn about [terraform data sources](https://www.terraform.io/docs/language/data-sources/index.html) and [querying terraform data sources](https://learn.hashicorp.com/tutorials/terraform/data-sources?in=terraform/configuration-language&utm_source=WEBSITE&utm_medium=WEB_BLOG&utm_offer=ARTICLE_PAGE).
 
