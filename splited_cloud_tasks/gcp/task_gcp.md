@@ -12,8 +12,8 @@
   * [TASK 8 - Create VM Instance/Instance Group/Load Balancer](task_gcp.md#task-8-create-vm-instanceinstance-groupload-balancer)
   * [TASK 9 - Use data discovery](task_gcp.md#task-9-use-data-discovery)
 - [Working with Terraform state](task_gcp.md#working-with-terraform-state)
-  * [TASK 10 - Move state to Cloud Storage Bucket](task_gcp.md#task-10-move-state-to-cloud-storage-bucket)
-  * [TASK 11 - Move resources](task_gcp.md#task-11-move-resources)
+  * [TASK 10 - Move resources](task_gcp.md#task-10-move-resources)
+  * [TASK 11 - Move state to Cloud Storage Bucket](task_gcp.md#task-11-move-state-to-cloud-storage-bucket)
   * [TASK 12 - Import resources](task_gcp.md#task-12-import-resources)
 - [Advanced tasks](task_gcp.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_gcp.md#task-13-expose-node-output-with-nginx)
@@ -319,25 +319,28 @@ Apply your changes when ready.
 
 # Working with Terraform state
 
-## TASK 10 - Move state to Cloud Storage Bucket
+In this section, we will delve into Terraform state management and Terraform backends. A backend serves as the repository where Terraform  stores its state files. The default backend is local, meaning that it stores the state file on your local disk. To enable effective collaboration with your colleagues, you should consider utilizing a [remote backend](https://developer.hashicorp.com/terraform/language/settings/backends/remote).
 
-Hint: Create a Cloud Storage Bucket(`name=epam-gcp-tf-state-${random_string}`) as a pre-requirement for this task. Please create the resource by a hands in GCP console. That resource will be out of our IaC approach as it will never be recreated.
+Switching the backend is a straightforward process accomplished by [re-initializing](https://developer.hashicorp.com/terraform/cli/commands/init#backend-initialization) with Terraform.
 
-Learn about [terraform backend in Cloud Storage Bucket](https://developer.hashicorp.com/terraform/language/settings/backends/gcs)
+It's crucial to highlight an important note regarding importing or moving resources between states in the upcoming tasks. Typically, there are several methods for transferring resources between two states:
 
-**Note:** GCS backend supports the state file lock without extra resources unlike AWS S3 bucket.
+ 1)   Employing the built-in `terraform state mv` command.
+ 2)   Directly editing state files.
+ 3)   Using the `terraform import` command.
 
-Refine your configurations:
+When migrating a resource block (your code) between configurations, you must simultaneously transfer the data between states. Additionally, there is an [experimantal feature](https://developer.hashicorp.com/terraform/language/import/generating-configuration) available for auto-generating configuration during the import process. However, this is beyond the scope of our current training.
 
-- Refine `base` configuration by moving local state to a cloud storage bucket.
-- Refine `compute` configuration by moving local state to a cloud storage bucket.
+Please note that the `terraform state mv` [1] command exclusively functions with local states. Therefore, if you opt for this method, ensure that you migrate your resources before transitioning to a remote state.
 
-Do not forget to change the path to the remote state for `compute` configuration.
+Alternatively, you can copy state files locally and relocate resources using either `terraform state mv`` or inline editing[2]. However, please be aware that inline editing is not a secure option, and you would need to modify the 'serial' counter each time you make changes in the state file.
 
-Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
-Run `terraform plan` to see your changes and re-apply your changes if needed.
+Finally, you have the option to import an existing resource into a new state using the `terraform state import resource.name resource.id` command[3] and remove it from the old state with `terraform state rm resource.name`.
 
-## TASK 11 - Move resources
+Any of these options will serve the purpose, but for educational purposes, we have opted for the simplest approach using `terraform state mv` command.
+
+
+## TASK 10 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -354,6 +357,25 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 
 - Terraform moved resources with no errors
 - GCP resources are NOT changed (check GCP Console)
+
+
+## TASK 11 - Move state to Cloud Storage Bucket
+
+Hint: Create a Cloud Storage Bucket(`name=epam-gcp-tf-state-${random_string}`) as a pre-requirement for this task. Please create the resource by a hands in GCP console. That resource will be out of our IaC approach as it will never be recreated.
+
+Learn about [terraform backend in Cloud Storage Bucket](https://developer.hashicorp.com/terraform/language/settings/backends/gcs)
+
+**Note:** GCS backend supports the state file lock without extra resources unlike AWS S3 bucket.
+
+Refine your configurations:
+
+- Refine `base` configuration by moving local state to a cloud storage bucket.
+- Refine `compute` configuration by moving local state to a cloud storage bucket.
+
+Do not forget to change the path to the remote state for `compute` configuration.
+
+Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
+Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 ## TASK 12 - Import resources
 

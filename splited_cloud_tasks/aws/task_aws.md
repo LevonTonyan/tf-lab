@@ -12,8 +12,8 @@
   * [TASK 8 - Create EC2/ASG/ELB](task_aws.md#task-8-create-ec2asgelb)
   * [TASK 9 - Use data discovery](task_aws.md#task-9-use-data-discovery)
 - [Working with Terraform state](task_aws.md#working-with-terraform-state)
-  * [TASK 10 - Move state to S3/Locking](task_aws.md#task-10-move-state-to-s3locking)
-  * [TASK 11 - Move resources](task_aws.md#task-11-move-resources)
+  * [TASK 10 - Move resources](task_aws.md#task-10-move-resources)
+  * [TASK 11 - Move state to S3/Locking](task_aws.md#task-11-move-state-to-s3locking)
   * [TASK 12 - Import resources](task_aws.md#task-12-import-resources)
 - [Advanced tasks](task_aws.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_aws.md#task-13-expose-node-output-with-nginx)
@@ -312,7 +312,46 @@ Apply your changes when ready.
     
 # Working with Terraform state
 
-## TASK 10 - Move state to S3/Locking
+In this section, we will delve into Terraform state management and Terraform backends. A backend serves as the repository where Terraform  stores its state files. The default backend is local, meaning that it stores the state file on your local disk. To enable effective collaboration with your colleagues, you should consider utilizing a [remote backend](https://developer.hashicorp.com/terraform/language/settings/backends/remote).
+
+Switching the backend is a straightforward process accomplished by [re-initializing](https://developer.hashicorp.com/terraform/cli/commands/init#backend-initialization) with Terraform.
+
+It's crucial to highlight an important note regarding importing or moving resources between states in the upcoming tasks. Typically, there are several methods for transferring resources between two states:
+
+ 1)   Employing the built-in `terraform state mv` command.
+ 2)   Directly editing state files.
+ 3)   Using the `terraform import` command.
+
+When migrating a resource block (your code) between configurations, you must simultaneously transfer the data between states. Additionally, there is an [experimantal feature](https://developer.hashicorp.com/terraform/language/import/generating-configuration) available for auto-generating configuration during the import process. However, this is beyond the scope of our current training.
+
+Please note that the `terraform state mv` [1] command exclusively functions with local states. Therefore, if you opt for this method, ensure that you migrate your resources before transitioning to a remote state.
+
+Alternatively, you can copy state files locally and relocate resources using either `terraform state mv`` or inline editing[2]. However, please be aware that inline editing is not a secure option, and you would need to modify the 'serial' counter each time you make changes in the state file.
+
+Finally, you have the option to import an existing resource into a new state using the `terraform state import resource.name resource.id` command[3] and remove it from the old state with `terraform state rm resource.name`.
+
+Any of these options will serve the purpose, but for educational purposes, we have opted for the simplest approach using `terraform state mv` command.
+
+
+## TASK 10 - Move resources
+
+Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
+
+You are going to move previously created resource(IAM group) from `base` to `compute` state.
+Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
+
+- Move The created AWS key pair resource from the `base` state to the `compute` using `terraform state mv` command.
+- Update both configurations according to this move.
+- Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
+
+Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
+
+### Definition of DONE:
+
+- Terraform moved resources with no errors
+- AWS resources are NOT changed (check AWS Console)
+
+## TASK 11 - Move state to S3/Locking
 
 Hint: Create an S3 Bucket(`name=epam-aws-tf-state-${random_string}`) and a DynamoDB table as a pre-requirement for this task. There are multiple ways to do this, including Terraform and CloudFormation. But
 please just create both resources by a hands in AWS console. Those resources will be out of our IaC approach as they will never be recreated.
@@ -330,24 +369,6 @@ Do not forget to change the path to the remote state for `compute` configuration
 
 Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
 Run `terraform plan` to see your changes and re-apply your changes if needed.
-
-## TASK 11 - Move resources
-
-Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
-
-You are going to move previously created resource(IAM group) from `base` to `compute` state.
-Hint: Keep in mind that there are 3 instances: AWS resource, Terraform state file which store some state of that resource, and Terraform configuration which describe resource. "Move resource" is moving it between states. Moreover to make it work you should delete said resource from source configuration and add it to the destination configuration (this action is not automated).
-
-- Move The created AWS key pair resource from the `base` state to the `compute` using `terraform state mv` command.
-- Update both configurations according to this move.
-- Run `terraform plan` on both configurations and observe the changes. Hint: there should not be any changes detected (no resource creation or deletion in case of correct resource move).
-
-Run `terraform validate` and `terraform fmt` to check if your configuration is valid and fits to a canonical format and style.
-
-### Definition of DONE:
-
-- Terraform moved resources with no errors
-- AWS resources are NOT changed (check AWS Console)
 
 ## TASK 12 - Import resources
 
