@@ -12,8 +12,8 @@
   * [TASK 8 - Create Virtual Machine/Scale Set/Load Balancer](task_azure.md#task-8-create-virtual-machinescale-setload-balancer)
   * [TASK 9 - Use data discovery](task_azure.md#task-9-use-data-discovery)
 - [Working with Terraform state](task_azure.md#working-with-terraform-state)
-  * [TASK 10 - Move state to a storage container](task_azure.md#task-10-move-state-to-a-storage-container)
-  * [TASK 11 - Move resources](task_azure.md#task-11-move-resources)
+  * [TASK 10 - Move resources](task_azure.md#task-10-move-resources)
+  * [TASK 11 - Move state to a storage container](task_azure.md#task-11-move-state-to-a-storage-container)
   * [TASK 12 - Import resources](task_azure.md#task-12-import-resources)
 - [Advanced tasks](task_azure.md#advanced-tasks)
   * [TASK 13 - Expose node output with nginx](task_azure.md#task-13-expose-node-output-with-nginx)
@@ -330,24 +330,28 @@ Apply your changes when ready.
     
 # Working with Terraform state
 
-## TASK 10 - Move state to a storage container
+In this section, we will delve into Terraform state management and Terraform backends. A backend serves as the repository where Terraform  stores its state files. The default backend is local, meaning that it stores the state file on your local disk. To enable effective collaboration with your colleagues, you should consider utilizing a [remote backend](https://developer.hashicorp.com/terraform/language/settings/backends/remote).
 
-Hint: Create a new storage account (`name=epamazurelab${random_string}`) and then a storage container (`name=epam-azure-tf-state`). There are multiple ways to do this, including Terraform and ARM. But
-please just create both resources by a hands in Azure Portal. Those resources will be out of our IaC approach as they will never be recreated.
+Switching the backend is a straightforward process accomplished by [re-initializing](https://developer.hashicorp.com/terraform/cli/commands/init#backend-initialization) with Terraform.
 
-Learn about [terraform backend in Azure storage container](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm)
+It's crucial to highlight an important note regarding importing or moving resources between states in the upcoming tasks. Typically, there are several methods for transferring resources between two states:
 
-Refine your configurations:
+ 1)   Employing the built-in `terraform state mv` command.
+ 2)   Directly editing state files.
+ 3)   Using the `terraform import` command.
 
-- Refine `base` configuration by moving local state to a storage container.
-- Refine `compute` configuration by moving local state to a storage container.
+When migrating a resource block (your code) between configurations, you must simultaneously transfer the data between states. Additionally, there is an [experimantal feature](https://developer.hashicorp.com/terraform/language/import/generating-configuration) available for auto-generating configuration during the import process. However, this is beyond the scope of our current training.
 
-Do not forget to change the path to the remote state for `compute` configuration.
+Please note that the `terraform state mv` [1] command exclusively functions with local states. Therefore, if you opt for this method, ensure that you migrate your resources before transitioning to a remote state.
 
-Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
-Run `terraform plan` to see your changes and re-apply your changes if needed.
+Alternatively, you can copy state files locally and relocate resources using either `terraform state mv`` or inline editing[2]. However, please be aware that inline editing is not a secure option, and you would need to modify the 'serial' counter each time you make changes in the state file.
 
-## TASK 11 - Move resources
+Finally, you have the option to import an existing resource into a new state using the `terraform state import resource.name resource.id` command[3] and remove it from the old state with `terraform state rm resource.name`.
+
+Any of these options will serve the purpose, but for educational purposes, we have opted for the simplest approach using `terraform state mv` command.
+
+
+## TASK 10 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -364,6 +368,23 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 
 - Terraform moved resources with no errors
 - Azure resources are NOT changed (check Azure Portal)
+
+## TASK 11 - Move state to a storage container
+
+Hint: Create a new storage account (`name=epamazurelab${random_string}`) and then a storage container (`name=epam-azure-tf-state`). There are multiple ways to do this, including Terraform and ARM. But
+please just create both resources by a hands in Azure Portal. Those resources will be out of our IaC approach as they will never be recreated.
+
+Learn about [terraform backend in Azure storage container](https://developer.hashicorp.com/terraform/language/settings/backends/azurerm)
+
+Refine your configurations:
+
+- Refine `base` configuration by moving local state to a storage container.
+- Refine `compute` configuration by moving local state to a storage container.
+
+Do not forget to change the path to the remote state for `compute` configuration.
+
+Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
+Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 ## TASK 12 - Import resources
 

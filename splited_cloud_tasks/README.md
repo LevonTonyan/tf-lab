@@ -12,8 +12,8 @@
 |Task 7|Configure a remote data source|Configure a remote data source|Configure a remote data source|Configure a remote data source|
 |Task 8|Create EC2/ASG/ELB|Create VM Instance/Instance Group/Load Balancer|Create Virtual Machine/Scale Set/Load Balancer|Configure application instances behind Load Balancer|
 |Task 9|Use data discovery|Use data discovery|Use data discovery|Use data discovery|
-|Task 10|Move state to S3/Locking|Move state to Cloud Storage Bucket|Move state to a storage container|Move state to other backends|
-|Task 11|Move resources|Move resources|Move resources|Move resources|
+|Task 10|Move resources|Move resources|Move resources|Move resources|
+|Task 11|Move state to S3/Locking|Move state to Cloud Storage Bucket|Move state to a storage container|Move state to other backends|
 |Task 12|Import resources|Import resources|Import resources|Import resources|
 |Task 13|Expose node output with nginx|Expose node output with nginx|Expose node output with nginx|Expose node output with nginx|
 |Task 14|Modules|Modules|Modules|Modules|

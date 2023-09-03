@@ -11,8 +11,8 @@
   * [TASK 7 - Configure a remote data source](task_github.md#task-7-configure-a-remote-data-source)
   * [TASK 8 - Create a Secure Public Repository](task_github.md#task-8-create-a-secure-public-repository)
 - [Working with Terraform state](task_github.md#working-with-terraform-state)
-  * [TASK 9 - Move state to Postgres database](task_github.md#task-9-move-state-to-postgres-database)
-  * [TASK 10 - Move resources](task_github.md#task-10-move-resources)
+  * [TASK 9 - Move resources](task_github.md#task-9-move-resources)
+  * [TASK 10 - Move state to Postgres database](task_github.md#task-10-move-state-to-postgres-database)
   * [TASK 11 - Import resources](task_github.md#task-11-import-resources)
 - [Configuring GitHub Actions](task_github.md#configuring-github-Actions)
   * [TASK 12 - Use data discovery](task_github.md#task-12-use-data-discovery)
@@ -286,10 +286,29 @@ Apply your changes when you're ready.
     
 # Working with Terraform state
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks. Once completed please remove .gitlab-ci.yml from your repository. 
+**Mandatory**: Please do not proceed to [TASKS  9-15] until your have finished previous tasks. Once completed please remove `.gitlab-ci.yml` from your repository and merge this change. This will disable the proctor checks but store the progress for previous tasks. Proctor cannot access to the resources in non-local state therefore it should be disabled.
 
-**Mandatory**: Please do not proceed to TASKs 9-14 until your have finished previous tasks.
+In this section, we will delve into Terraform state management and Terraform backends. A backend serves as the repository where Terraform  stores its state files. The default backend is local, meaning that it stores the state file on your local disk. To enable effective collaboration with your colleagues, you should consider utilizing a [remote backend](https://developer.hashicorp.com/terraform/language/settings/backends/remote).
 
+Switching the backend is a straightforward process accomplished by [re-initializing](https://developer.hashicorp.com/terraform/cli/commands/init#backend-initialization) with Terraform.
+
+It's crucial to highlight an important note regarding importing or moving resources between states in the upcoming tasks. Typically, there are several methods for transferring resources between two states:
+
+ 1)   Employing the built-in `terraform state mv` command.
+ 2)   Directly editing state files.
+ 3)   Using the `terraform import` command.
+
+When migrating a resource block (your code) between configurations, you must simultaneously transfer the data between states. Additionally, there is an [experimantal feature](https://developer.hashicorp.com/terraform/language/import/generating-configuration) available for auto-generating configuration during the import process. However, this is beyond the scope of our current training.
+
+Please note that the `terraform state mv` [1] command exclusively functions with local states. Therefore, if you opt for this method, ensure that you migrate your resources before transitioning to a remote state.
+
+Alternatively, you can copy state files locally and relocate resources using either `terraform state mv`` or inline editing[2]. However, please be aware that inline editing is not a secure option, and you would need to modify the 'serial' counter each time you make changes in the state file.
+
+Finally, you have the option to import an existing resource into a new state using the `terraform state import resource.name resource.id` command[3] and remove it from the old state with `terraform state rm resource.name`.
+
+Any of these options will serve the purpose, but for educational purposes, we have opted for the simplest approach using `terraform state mv` command.
+
+>>>
 When working with Terraform in a multiple teams environment, it is common for each team to have their own state file for the resources they are managing. This is because Terraform state is meant to be a shared resource, but it can be difficult to coordinate changes to the state file among multiple teams. Having separate state files for each team can help avoid conflicts and make it easier to manage changes to the infrastructure.
 
 Additionally, having separate state files can help with security and access control. Different teams may have different levels of access to different resources, and having separate state files can help ensure that each team only has access to the resources they need.
@@ -297,36 +316,10 @@ Additionally, having separate state files can help with security and access cont
 In most cases, using separate state files for each team is recommended to help manage complexity and ensure that changes are made in a coordinated and controlled manner.
 
 For this lab, the first state file (`base` folder) belongs to the DevOps team, which manages the global GitHub organization settings, and the second state (`repos` folder) is managed by developers teams which usually work with repositories and their configurations. In the real environment, these state files may be more.
+>>>
 
-## TASK 9 - Move state to Postgres database
 
-Hint: Create a docker container with Postgres databases as a pre-requirement for this task. 
-```bash
-docker run -d --name pg-state -e POSTGRES_USER=tfstate -e POSTGRES_PASSWORD={YOUR_PASSWORD} -e POSTGRES_MULTIPLE_DATABASES=repos,base -p 5432:5432 gradescope/postgresql-multiple-databases:14.4
-```
-
-Learn about [terraform backend in Postgres](https://developer.hashicorp.com/terraform/language/settings/backends/pg)
-
-Postgres state was selected for this lab as a free available backend state. To make postgres backend usage simpler here you need to have docker installed.
-
-Refine your configurations:
-
-- Refine `base` configuration by moving local state to a postgres database.
-- Refine `repos` configuration by moving local state to a postgres database.
-
-Hint: configuration for `base` state:
-```tf
-  backend "pg" {
-    conn_str = "postgres://tfstate:{YOUR_PASSWORD}@localhost/base?sslmode=disable"
-  }
-```
-
-Do not forget to change the path to the remote state for `repos` configuration.
-
-Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
-Run `terraform plan` to see your changes and re-apply your changes if needed.
-
-## TASK 10 - Move resources
+## TASK 9 - Move resources
 
 Learn about [terraform state mv](https://www.terraform.io/docs/cli/commands/state/mv.html) command
 
@@ -366,6 +359,35 @@ Run `terraform validate` and `terraform fmt` to check if your configuration is v
 
 - Terraform moved resources with no errors
 - GitHub repository is created as expected (check GitHub WebUI)
+
+
+## TASK 10 - Move state to Postgres database
+
+Hint: Create a docker container with Postgres databases as a pre-requirement for this task. 
+```bash
+docker run -d --name pg-state -e POSTGRES_USER=tfstate -e POSTGRES_PASSWORD={YOUR_PASSWORD} -e POSTGRES_MULTIPLE_DATABASES=repos,base -p 5432:5432 gradescope/postgresql-multiple-databases:14.4
+```
+
+Learn about [terraform backend in Postgres](https://developer.hashicorp.com/terraform/language/settings/backends/pg)
+
+Postgres state was selected for this lab as a free available backend state. To make postgres backend usage simpler here you need to have docker installed.
+
+Refine your configurations:
+
+- Refine `base` configuration by moving local state to a postgres database.
+- Refine `repos` configuration by moving local state to a postgres database.
+
+Hint: configuration for `base` state:
+```tf
+  backend "pg" {
+    conn_str = "postgres://tfstate:{YOUR_PASSWORD}@localhost/base?sslmode=disable"
+  }
+```
+
+Do not forget to change the path to the remote state for `repos` configuration.
+
+Run `terraform validate` and `terraform fmt` to check if your modules valid and fits to a canonical format and style.
+Run `terraform plan` to see your changes and re-apply your changes if needed.
 
 ## TASK 11 - Import resources
 
