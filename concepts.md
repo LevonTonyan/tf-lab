@@ -112,6 +112,8 @@ Modules are, again, [plentiful](https://registry.terraform.io/) and are develope
 
 Think of Terraform [variables](https://www.terraform.io/language/values/variables) as function arguments. They let you customize aspects of Terraform modules without altering the module's own source code. This allows you to share modules across different Terraform configurations, making your module composable and reusable. The aforementioned outputs are like function return values.
 
+Short example on [variables precedence](examples/variables_precedence.md).
+
 [Locals](https://www.terraform.io/language/values/locals) are simply transformed values used by a module or configuration. You can think of them as temporary local variables of a function needed for it to work properly.
 
 **Functions**
