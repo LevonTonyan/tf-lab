@@ -23,7 +23,7 @@ variable "name" {
 Lets call this module from our code with the default values:
 
 ```
-module "my_bucket"{
+module "my_name"{
   source = ../modules/my_name
 }
 
