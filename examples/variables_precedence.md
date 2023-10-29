@@ -59,6 +59,9 @@ output "result" {
 
 ```
 
+`terraform plan` asks for the value:
+
+
 ```
 var.another_name
   Enter a value: spiderman
@@ -90,7 +93,7 @@ Changes to Outputs:
 
 ## 7. Environment variables
 
-Now we have to set environment variable befor run `terraform plan`:
+Now we have to set environment variable before run `terraform plan`:
 
 `export TF_VAR_another_name="wolverine"`
 
