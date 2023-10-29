@@ -73,9 +73,11 @@ Changes to Outputs:
 
 Lets define our variable:
 
-```variable "another_name" {
+```
+variable "another_name" {
   default = "superman"
-}```
+}
+```
 
 
 And `terraform plan` returns
