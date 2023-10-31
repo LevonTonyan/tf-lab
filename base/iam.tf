@@ -2,6 +2,7 @@
 
 resource "aws_iam_group" "epam-tf-iam-group" {
   name = "Levon-Tonyan-01-group"
+
 }
 
 
@@ -20,6 +21,12 @@ resource "aws_iam_policy" "policy" {
       }
     ]
   })
+   tags = {
+    Name      = "Levon-Tonyan-01-rt"
+    Terraform = true
+    Project   = "epam-tf-lab"
+    Owner     = "Levon-Tonyan"
+  }
 }
 
 
@@ -38,6 +45,12 @@ resource "aws_iam_role" "write_to_s3" {
       },
     ]
   })
+   tags = {
+    Name      = "Levon-Tonyan-01-rt"
+    Terraform = true
+    Project   = "epam-tf-lab"
+    Owner     = "Levon-Tonyan"
+  }
 }
 
 
@@ -46,10 +59,17 @@ resource "aws_iam_policy_attachment" "attach-ec2-role" {
   name = "ec2-attachment" 
   roles = [ aws_iam_role.write_to_s3.name ]
   policy_arn = aws_iam_policy.policy.arn
+  
 }
 
 
 resource "aws_iam_instance_profile" "ecs-profile" {
   name = "ec2-profile"
   role = aws_iam_role.write_to_s3.name
+   tags = {
+    Name      = "Levon-Tonyan-01-rt"
+    Terraform = true
+    Project   = "epam-tf-lab"
+    Owner     = "Levon-Tonyan"
+  }
 }
