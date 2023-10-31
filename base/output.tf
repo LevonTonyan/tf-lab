@@ -25,6 +25,7 @@ output "security_group_id_http_lb" {
   value = aws_subnet.public_c.id
 }
 
+
 output "iam_instance_profile_name" {
   value = aws_iam_instance_profile.ec2-profile.name
 }

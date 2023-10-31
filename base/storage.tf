@@ -16,9 +16,13 @@ resource "random_string" "random" {
   special          = false
   lower            = true
   upper            = false
-
 }
 
-output "s3_bucket" {
-  value = random_string.random.result
+
+data "template_file" "bucke_name" {
+  template = file("./../compute/user_data.sh")
+
+  vars = {
+    S3_BUCKET = "epam-tf-lab-${random_string.random.result}"
+  }
 }
