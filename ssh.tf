@@ -4,5 +4,6 @@ resource "aws_key_pair" "deployer" {
   tags = {
     Terraform=true
     Project="epam-tf-lab"
+    Owner="Levon-Tonyan"
   }
 }

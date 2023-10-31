@@ -14,6 +14,7 @@ resource "aws_vpc" "vpc" {
     Name = "Levon-Tonyan-01-vpc"
     Terraform = true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
@@ -26,6 +27,7 @@ resource "aws_subnet" "public_a" {
     Name = "Levon-Tonyan-01-subnet-public-a"
     Terraform=true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
@@ -37,6 +39,7 @@ resource "aws_subnet" "public_b" {
     Name = "Levon-Tonyan-01-subnet-public-b"
     Terraform=true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
@@ -48,6 +51,7 @@ resource "aws_subnet" "public_c" {
     Name = "Levon-Tonyan-01-subnet-public-c"
     Terraform=true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
@@ -57,6 +61,7 @@ resource "aws_internet_gateway" "igw" {
     Name = "Levon-Tonyan-01-igw"
     Terraform=true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
@@ -71,6 +76,7 @@ resource "aws_route_table" "rt" {
     Name = "Levon-Tonyan-01-rt"
     Terraform=true
     Project="epam-tf-lab"
+     Owner="Levon-Tonyan"
   }
 }
 
