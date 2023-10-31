@@ -7,7 +7,7 @@ resource "aws_iam_group" "epam-tf-iam-group" {
 
 
 resource "aws_iam_policy" "policy" {
-  name        = "${aws_s3_bucket.s3_epam.id}"
+  name = "write-to-epam-tf-lab-${random_string.random.result}"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
@@ -21,7 +21,7 @@ resource "aws_iam_policy" "policy" {
       }
     ]
   })
-   tags = {
+  tags = {
     Name      = "Levon-Tonyan-01-rt"
     Terraform = true
     Project   = "epam-tf-lab"
@@ -45,7 +45,7 @@ resource "aws_iam_role" "write_to_s3" {
       },
     ]
   })
-   tags = {
+  tags = {
     Name      = "Levon-Tonyan-01-rt"
     Terraform = true
     Project   = "epam-tf-lab"
@@ -56,17 +56,17 @@ resource "aws_iam_role" "write_to_s3" {
 
 
 resource "aws_iam_policy_attachment" "attach-ec2-role" {
-  name = "ec2-attachment" 
-  roles = [ aws_iam_role.write_to_s3.name ]
+  name       = "ec2-attachment"
+  roles      = [aws_iam_role.write_to_s3.name]
   policy_arn = aws_iam_policy.policy.arn
-  
+
 }
 
 
-resource "aws_iam_instance_profile" "ecs-profile" {
+resource "aws_iam_instance_profile" "ec2-profile" {
   name = "ec2-profile"
   role = aws_iam_role.write_to_s3.name
-   tags = {
+  tags = {
     Name      = "Levon-Tonyan-01-rt"
     Terraform = true
     Project   = "epam-tf-lab"

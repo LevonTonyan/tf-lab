@@ -16,7 +16,7 @@ resource "random_string" "random" {
   special          = false
   lower            = true
   upper            = false
-  
+
 }
 
 output "s3_bucket" {
