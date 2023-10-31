@@ -1,5 +1,4 @@
 terraform {
-
 }
 
 provider "aws" {
