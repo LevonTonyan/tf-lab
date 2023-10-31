@@ -4,7 +4,7 @@ terraform {
 
 provider "aws" {
   region                   = "us-east-1"
-
+ls
 
 }
 
@@ -63,3 +63,5 @@ resource "aws_route_table" "rt" {
     Name = "Levon-Tonyan-01-rt"
   }
 }
+
+
