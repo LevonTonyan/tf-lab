@@ -13,7 +13,11 @@ resource "aws_s3_bucket" "s3_epam" {
 resource "random_string" "random" {
   length           = 8
   override_special = "_ "
-  special = false
-  lower = true
-  upper = false
+  special          = false
+  lower            = true
+  upper            = false
+}
+
+output "s3_bucket" {
+  value = random_string.random.result
 }

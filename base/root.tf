@@ -80,3 +80,7 @@ resource "aws_route_table" "rt" {
 }
 
 
+output "s3_arn" {
+  value = aws_s3_bucket.s3_epam.bucket_domain_name
+}
+
