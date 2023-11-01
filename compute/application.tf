@@ -26,7 +26,7 @@ resource "aws_launch_template" "epam-tf-lab" {
     associate_public_ip_address = true
     security_groups             = [data.terraform_remote_state.storage.outputs.security_group_id_ssh, data.terraform_remote_state.storage.outputs.security_group_id_http]
   }
-  user_data = base64encode(data.template_file.bucket_name.rendered)
+  user_data = base64encode(replace(file("user_data.sh"), "REPLACE_ME", data.terraform_remote_state.storage.outputs.s3_bucket_name))
 
 
 }
@@ -35,19 +35,7 @@ resource "aws_launch_template" "epam-tf-lab" {
 data "terraform_remote_state" "storage" {
   backend = "local"
   config = {
-    path = "./../base/terraform.tfstate"
-  }
-
-
-
-
-}
-
-data "template_file" "bucket_name" {
-  template = file("./user_data.sh")
-
-  vars = {
-    S3_BUCKET = data.terraform_remote_state.storage.outputs.s3_bucket_name
-
+    path = "../base/terraform.tfstate"
   }
 }
+

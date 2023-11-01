@@ -15,12 +15,15 @@ resource "aws_iam_policy" "policy" {
         "Sid" : "Stmt1698757730436",
         "Action" : [
           "s3:PutObject",
-          "ec2:DescribeInstances", 
-          
+          "ec2:DescribeInstances",
+
         ],
         "Effect" : "Allow",
-        "Resource" : ["arn:aws:s3:::${random_string.random.result}", "arn:aws:ec2:us-east-1:429881705512:instance/*"]
-      
+        "Resource" : [
+          "arn:aws:s3:::epam-tf-lab-${random_string.random.result}",
+          "arn:aws:s3:::epam-tf-lab-${random_string.random.result}/*"
+        ]
+
       }
     ]
   })

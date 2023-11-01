@@ -19,10 +19,4 @@ resource "random_string" "random" {
 }
 
 
-data "template_file" "bucke_name" {
-  template = file("./../compute/user_data.sh")
 
-  vars = {
-    S3_BUCKET = "epam-tf-lab-${random_string.random.result}"
-  }
-}
