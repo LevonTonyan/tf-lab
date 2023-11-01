@@ -12,19 +12,19 @@ data "aws_subnets" "public_subnets" {
 output "public_subnets" {
   value = data.aws_subnets.public_subnets.ids
 }
-
+////////////////////////////////////////
 output "security_group_id_ssh" {
-  value = aws_subnet.public_a.id
+  value = aws_security_group.ssh-inbound.id
 }
 
 output "security_group_id_http" {
-  value = aws_subnet.public_b.id
+  value = aws_security_group.http-inbound.id
 }
 
 output "security_group_id_http_lb" {
-  value = aws_subnet.public_c.id
+  value = aws_security_group.lb_http-inbound.id
 }
-
+///////////////////////////////////////////
 
 output "iam_instance_profile_name" {
   value = aws_iam_instance_profile.ec2-profile.name
